@@ -12,19 +12,34 @@ public class ProblemsController {
     @Autowired
     private ProblemsServices problemsServices;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/AddProblems")
+    @RequestMapping(method = RequestMethod.POST, value = "/addProblems")
     public void AddProblems(@RequestBody Problems problem){
         problemsServices.add(problem);
     }
 
-    @RequestMapping(value = "/Problems/{id}")
-    public Optional<Problems> showProblem(@PathVariable Long id){
+    @RequestMapping(value = "/problems/id/{id}")
+    public Optional<Problems> showProblemById(@PathVariable Long id){
         return problemsServices.getProblemById(id);
     }
 
-    @RequestMapping(value = "/Problems")
-    public List<Problems> showProblems(){
+    @RequestMapping(value = "/problems")
+    public List<Problems> showAllProblems(){
         return problemsServices.getAllProblems();
+    }
+
+    @RequestMapping(value = "/problems/category/{problemCategory}")
+    public List<Problems> showProblemsByCategory(@PathVariable String problemCategory){
+        return problemsServices.getProblemByCategory(problemCategory);
+    }
+
+    @RequestMapping(value = "/problems/difficulty/{problemDifficulty}")
+    public List<Problems> showProblemsByDifficulty(@PathVariable String problemDifficulty){
+        return problemsServices.getProblemByDifficulty(problemDifficulty);
+    }
+
+    @RequestMapping(value = "/problems/{problemTitle}")
+    public List<Problems> showProblemsByTitle(@PathVariable String problemTitle){
+        return problemsServices.getProblemByTitle(problemTitle);
     }
 
 }

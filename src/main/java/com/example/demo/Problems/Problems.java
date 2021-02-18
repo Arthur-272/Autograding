@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
 
 @Entity
 public class Problems {
@@ -12,28 +11,28 @@ public class Problems {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    private String problemStatement;
-    private String problemTitle;
-    private String problemSolution;
-    private double problemScore;
+    private String statement;
+    private String title;
+    private String solution;
+    private double score;
     private int numOfTestCases;
     private String testCasesFile;
-    private String problemCategory;
-    private String problemDifficulty;
+    private String category;
+    private String difficulty;
 //    private Date problemDate;
 
     public Problems() {}
     
-    public Problems(long id, String problemStatement, String problemTitle, String problemSolution, double problemScore, int numOfTestCases, String testCasesFile, String problemCategory, String problemDifficulty) {
+    public Problems(long id, String statement, String title, String solution, double score, int numOfTestCases, String testCasesFile, String category, String difficulty) {
         this.id = id;
-        this.problemStatement = problemStatement;
-        this.problemTitle = problemTitle;
-        this.problemSolution = problemSolution;
-        this.problemScore = problemScore;
+        this.statement = statement;
+        this.title = title;
+        this.solution = solution;
+        this.score = score;
         this.numOfTestCases = numOfTestCases;
         this.testCasesFile = testCasesFile;
-        this.problemCategory = problemCategory;
-        this.problemDifficulty = problemDifficulty;
+        this.category = category;
+        this.difficulty = difficulty;
     }
 
     public long getId() {
@@ -44,36 +43,36 @@ public class Problems {
         this.id = id;
     }
 
-    public String getProblemStatement() {
-        return problemStatement;
+    public String getStatement() {
+        return statement;
     }
 
-    public void setProblemStatement(String problemStatement) {
-        this.problemStatement = problemStatement;
+    public void setStatement(String problemStatement) {
+        this.statement = problemStatement;
     }
 
-    public String getProblemTitle() {
-        return problemTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setProblemTitle(String problemTitle) {
-        this.problemTitle = problemTitle;
+    public void setTitle(String problemTitle) {
+        this.title = problemTitle;
     }
 
-    public String getProblemSolution() {
-        return problemSolution;
+    public String getSolution() {
+        return solution;
     }
 
-    public void setProblemSolution(String problemSolution) {
-        this.problemSolution = problemSolution;
+    public void setSolution(String problemSolution) {
+        this.solution = problemSolution;
     }
 
-    public double getProblemScore() {
-        return problemScore;
+    public double getScore() {
+        return score;
     }
 
-    public void setProblemScore(double problemScore) {
-        this.problemScore = problemScore;
+    public void setScore(double problemScore) {
+        this.score = problemScore;
     }
 
     public int getNumOfTestCases() {
@@ -92,19 +91,19 @@ public class Problems {
         this.testCasesFile = testCasesFile;
     }
 
-    public String getProblemCategory() {
-        return problemCategory;
+    public String getCategory() {
+        return category;
     }
 
-    public void setProblemCategory(String problemCategory) {
-        this.problemCategory = problemCategory;
+    public void setCategory(String problemCategory) {
+        this.category = problemCategory;
     }
 
-    public String getProblemDifficulty() {
-        return problemDifficulty;
+    public String getDifficulty() {
+        return difficulty;
     }
 
-    public void setProblemDifficulty(String problemDifficulty) {
-        this.problemDifficulty = problemDifficulty;
+    public void setDifficulty(String problemDifficulty) {
+        this.difficulty = problemDifficulty;
     }
 }

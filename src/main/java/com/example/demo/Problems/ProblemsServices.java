@@ -22,8 +22,26 @@ public class ProblemsServices {
     }
 
     public List<Problems> getAllProblems() {
-        List<Problems> list = new ArrayList<Problems>();
+        List<Problems> list = new ArrayList<>();
         problemsRepositories.findAll().forEach(list::add);
+        return list;
+    }
+
+    public List<Problems> getProblemByCategory(String problemCategory) {
+        List<Problems> list = new ArrayList<>();
+        problemsRepositories.findByCategoryIgnoreCase(problemCategory).forEach(list::add);
+        return list;
+    }
+
+    public List<Problems> getProblemByTitle(String problemTitle){
+        List<Problems> list = new ArrayList<>();
+        problemsRepositories.findByTitleIgnoreCase(problemTitle).forEach(list::add);
+        return list;
+    }
+
+    public List<Problems> getProblemByDifficulty(String problemDifficulty){
+        List<Problems> list = new ArrayList<>();
+        problemsRepositories.findByDifficultyIgnoreCase(problemDifficulty).forEach(list::add);
         return list;
     }
 }
