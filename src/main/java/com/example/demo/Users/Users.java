@@ -8,7 +8,7 @@ import javax.persistence.Id;
 public class Users {
 
     @Id
-    public int id;
+    public long id;
     public String firstName;
     public String lastName;
     public String password;
@@ -30,11 +30,11 @@ public class Users {
         this.rating = rating;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
