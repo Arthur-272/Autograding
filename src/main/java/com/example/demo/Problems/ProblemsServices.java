@@ -44,4 +44,13 @@ public class ProblemsServices {
         problemsRepositories.findByDifficultyIgnoreCase(problemDifficulty).forEach(list::add);
         return list;
     }
+
+
+
+
+    /*FIXME: Need to provide unique problem id that was generated while adding the problem. But the question is how to get that id, cause no user is gonna note down each and every problem id.
+    Also you don't require a user add a problem, we can add that constraint if it helps.*/
+    public void updateProblem(Problems problem){
+        problemsRepositories.save(problem);
+    }
 }

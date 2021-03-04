@@ -24,8 +24,12 @@ public class SolutionsServices {
 
     public void addSolution(long userId, long problemId, Solutions solution) {
         Problems problem = problemsRepositories.findById(problemId).get();
-        Users user = (Users) usersRepositories.findById(userId).get();
+        Users user = usersRepositories.findById(userId).get();
+        long score = solution.getScore();
+        user.setScore((user.getScore() + score));
 
+//        Updating the score based on test cases passed
+        usersRepositories.save(user);
         solution.setUsers(user);
         solution.setProblems(problem);
         solutionsRepositories.save(solution);
@@ -44,4 +48,22 @@ public class SolutionsServices {
     public List<Solutions> getSolutionsByUserId(Long userId){
         return solutionsRepositories.findAllByUsersId(userId);
     }
+
+    /**
+     * TODO: Think about how to get that particular solution id so that we can update that exact solution.
+     * One way is to make that id meaningful rather than just numbers like, 98 (user id) + 1 (problem id) = 981
+     * */
+    /*public void updateSolution(Solutions solution){
+        Solutions previousSolution;
+        long previousScore = previousSolution.getScore();
+
+//        Subtracting the previous solution's score from the user and updating it in Solution table
+        Users user = solution.getUsers();
+        System.out.println(previousScore);
+        user.setScore((user.getScore() - previousScore));
+        solution.setUsers(user);
+
+        solutionsRepositories.save(solution);
+    }*/
+
 }

@@ -8,12 +8,13 @@ import javax.persistence.Id;
 public class Users {
 
     @Id
-    public long id;
-    public String firstName;
-    public String lastName;
-    public String password;
-    public String mobile;
-    public int rating;
+    private long id;
+    private String firstName;
+    private String lastName;
+    private String password;
+    private String mobile;
+    private long score;
+    private String role;
     //public Date lastLoggedInDate;
 
     public Users(){
@@ -21,13 +22,14 @@ public class Users {
     }
 
 
-    public Users(int id, String firstName, String lastName, String password, String mobile, int rating) {
+    public Users(int id, String firstName, String lastName, String password, String mobile, int score, String role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mobile = mobile;
-        this.rating = rating;
+        this.score = score;
+        this.role = role;
     }
 
     public long getId() {
@@ -70,12 +72,20 @@ public class Users {
         this.mobile = mobile;
     }
 
-    public int getRating() {
-        return rating;
+    public long getScore() {
+        return score;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setScore(long score) {
+        this.score = score;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     /*public Date getLastLoggedInDate() {

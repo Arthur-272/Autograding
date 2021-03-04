@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Solutions {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String solution;
     private int testCasesPassed;
