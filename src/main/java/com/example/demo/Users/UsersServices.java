@@ -11,4 +11,12 @@ public class UsersServices {
     public void updateUser(Users user){
         usersRepositories.save(user);
     }
+
+    public boolean isTeacher(long id){
+        return usersRepositories.findById(id).get().getRole().equals("teacher");
+    }
+
+    public boolean isStudent(long id){
+        return usersRepositories.findById(id).get().getRole().equals("student");
+    }
 }

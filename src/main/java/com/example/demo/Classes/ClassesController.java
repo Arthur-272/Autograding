@@ -39,12 +39,8 @@ public class ClassesController {
     }
 
     @PostMapping("/user/{userId}/class/{id}/newPost")
-    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post){
+    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post) throws Exception{
         classesServices.createPost(userId, id, post);
     }
-
-    /**
-     * TODO: To add a method to add post in the class, also check whether the posts class is correct or not, also whether the post object will come in class or not?
-     * */
 
 }

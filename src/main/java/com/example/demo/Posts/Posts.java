@@ -1,25 +1,19 @@
 package com.example.demo.Posts;
 
-import com.example.demo.Classes.Classes;
 import com.example.demo.Users.Users;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 public class Posts {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String title;
     private String description;
-    //    private Date dateAdded;
-
-    @ManyToOne
-    private Classes classes;
+    private Date dateAdded;
 
     @ManyToMany
     private List<Users> usersConcerning;
@@ -28,11 +22,11 @@ public class Posts {
 
     }
 
-    public Posts(long id, String title, String description, Classes classes, List<Users> usersConcerning) {
+    public Posts(long id, String title, String description, Date dateAdded, List<Users> usersConcerning) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.classes = classes;
+        this.dateAdded = dateAdded;
         this.usersConcerning = usersConcerning;
     }
 
@@ -60,12 +54,12 @@ public class Posts {
         this.description = description;
     }
 
-    public Classes getClasses() {
-        return classes;
+    public Date getDateAdded() {
+        return dateAdded;
     }
 
-    public void setClasses(Classes classes) {
-        this.classes = classes;
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     public List<Users> getUsersConcerning() {
