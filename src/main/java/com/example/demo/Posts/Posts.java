@@ -1,5 +1,6 @@
 package com.example.demo.Posts;
 
+import com.example.demo.Comments.Comments;
 import com.example.demo.Users.Users;
 
 import javax.persistence.*;
@@ -18,16 +19,20 @@ public class Posts {
     @ManyToMany
     private List<Users> usersConcerning;
 
+    @OneToMany
+    private List<Comments> comments;
+
     public Posts() {
 
     }
 
-    public Posts(long id, String title, String description, Date dateAdded, List<Users> usersConcerning) {
+    public Posts(long id, String title, String description, Date dateAdded, List<Users> usersConcerning, List<Comments> comments) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dateAdded = dateAdded;
         this.usersConcerning = usersConcerning;
+        this.comments = comments;
     }
 
     public long getId() {
@@ -68,5 +73,13 @@ public class Posts {
 
     public void setUsersConcerning(List<Users> usersConcerning) {
         this.usersConcerning = usersConcerning;
+    }
+
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
     }
 }

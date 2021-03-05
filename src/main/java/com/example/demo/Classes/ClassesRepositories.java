@@ -1,6 +1,5 @@
 package com.example.demo.Classes;
 
-import com.example.demo.Classes.Classes;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

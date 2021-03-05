@@ -1,10 +1,8 @@
 package com.example.demo.Classes;
 
-import com.example.demo.Posts.Posts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -37,10 +35,4 @@ public class ClassesController {
     public void addStudents(@PathVariable long userId, @PathVariable long id, @PathVariable long studentId) throws Exception{
         classesServices.addStudent(userId, id, studentId);
     }
-
-    @PostMapping("/user/{userId}/class/{id}/newPost")
-    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post) throws Exception{
-        classesServices.createPost(userId, id, post);
-    }
-
 }

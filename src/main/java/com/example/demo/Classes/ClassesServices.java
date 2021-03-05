@@ -1,5 +1,7 @@
 package com.example.demo.Classes;
 
+import com.example.demo.Comments.Comments;
+import com.example.demo.Comments.CommentsServices;
 import com.example.demo.Posts.Posts;
 import com.example.demo.Posts.PostsServices;
 import com.example.demo.Users.Users;
@@ -27,6 +29,9 @@ public class ClassesServices {
 
     @Autowired
     private PostsServices postsServices;
+
+    @Autowired
+    private CommentsServices commentsServices;
 
     public List<Classes> getAllClasses() {
         List<Classes> list = new ArrayList<Classes>();
@@ -62,7 +67,7 @@ public class ClassesServices {
             newClass.setStudents(students);
 
 //            Adding an empty list of posts/announcements in that class
-            List<Posts> posts = new ArrayList<Posts>();
+            List<com.example.demo.Posts.Posts> posts = new ArrayList<com.example.demo.Posts.Posts>();
             newClass.setPosts(posts);
 
 //            Adding the class to the db
@@ -128,33 +133,6 @@ public class ClassesServices {
                 throw new Exception("Not a student");
             }
         } else {
-            throw new Exception("Invalid user accessing the class");
-        }
-    }
-
-    public void createPost(long userId, long classId, Posts newPost) throws Exception{
-        if(isOwner(userId, classId)){
-            Classes classes = classesRepositories.findById(classId).get();
-            List<Posts> postsInClass = classes.getPosts();
-
-//            Setting the current date to the new Post.
-            newPost.setDateAdded(new Date());
-
-//            Setting the users concerned to the new Post.
-            List<Users> userConcerned = new ArrayList<>();
-            newPost.setUsersConcerning(userConcerned);
-
-//            Adding the new post in the db
-            postsServices.addPost(newPost);
-
-//            Adding the post to the list of post already in the class
-            postsInClass.add(newPost);
-            classes.setPosts(postsInClass);
-
-//            Saving changes to the db
-            classesRepositories.save(classes);
-
-        } else{
             throw new Exception("Invalid user accessing the class");
         }
     }

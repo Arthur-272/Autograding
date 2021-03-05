@@ -27,7 +27,7 @@ public class Classes {
     public Classes() {
     }
 
-    public Classes(long id, String name, String description, long ownerId, List<Users> students, List<Users> teachers, List<Posts> posts) {
+    public Classes(long id, String name, String description, long ownerId, List<Users> students, List<Users> teachers, List<com.example.demo.Posts.Posts> posts) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -85,11 +85,11 @@ public class Classes {
         this.teachers = teachers;
     }
 
-    public List<Posts> getPosts() {
+    public List<com.example.demo.Posts.Posts> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Posts> posts) {
+    public void setPosts(List<com.example.demo.Posts.Posts> posts) {
         this.posts = posts;
     }
 }
