@@ -17,7 +17,7 @@ public class PostsController {
     private ClassesServices classesServices;
 
     @PostMapping("/user/{userId}/class/{id}/newPost")
-    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody com.example.demo.Posts.Posts post) throws Exception{
+    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post) throws Exception{
         postsServices.createPost(userId, id, post);
     }
 }

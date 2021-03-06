@@ -1,8 +1,13 @@
 package com.example.demo.Classes;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.JSONParserTokenManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -26,13 +31,14 @@ public class ClassesController {
         return classesServices.getClassesByOwnerId(id);
     }
 
-    @PostMapping("/user/{userId}/class/{id}/addTeachers/{teacherId}")
-    public void addTeachers(@PathVariable long userId, @PathVariable long id, @PathVariable long teacherId)throws Exception{
-        classesServices.addTeachers(userId, id, teacherId);
+    @PostMapping("/user/{userId}/class/{id}/addTeachers")
+    public void addTeachers(@PathVariable long userId, @PathVariable long id, @PathVariable String jsonPassed)throws Exception{
+        classesServices.addTeachers(userId, id, new JSONObject(jsonPassed).getJSONArray("ids"));
     }
 
-    @PostMapping("/user/{userId}/class/{id}/addStudents/{studentId}")
-    public void addStudents(@PathVariable long userId, @PathVariable long id, @PathVariable long studentId) throws Exception{
-        classesServices.addStudent(userId, id, studentId);
+//    For this method the request body should be of type plain text
+    @PostMapping("/user/{userId}/class/{id}/addStudents")
+    public void addStudents(@PathVariable long userId, @PathVariable long id, @RequestBody String jsonPassed) throws Exception{
+        classesServices.addStudent(userId, id, new JSONObject(jsonPassed).getJSONArray("ids"));
     }
 }
