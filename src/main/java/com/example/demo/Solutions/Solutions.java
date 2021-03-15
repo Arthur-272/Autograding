@@ -4,30 +4,31 @@ import com.example.demo.Problems.Problems;
 import com.example.demo.Users.Users;
 
 import javax.persistence.*;
+import java.io.IOException;
 
 @Entity
 public class Solutions {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String solution;
+
+    @ManyToOne
+    private Users users;
     private int testCasesPassed;
-    private int score;
-    private String langUsed;
+    private long score;
 
     @ManyToOne
     private Problems problems;
 
-    @ManyToOne
-    private Users users;
+    @Lob
+    private byte[] solution;
 
-    public Solutions(long id, String solution, int testCasesPassed, int score, String langUsed, Problems problems, Users users) {
-        this.id = id;
+
+    public Solutions(byte[] solution, int testCasesPassed, long score, Problems problems, Users users) throws IOException {
         this.solution = solution;
         this.testCasesPassed = testCasesPassed;
         this.score = score;
-        this.langUsed = langUsed;
         this.problems = problems;
         this.users = users;
     }
@@ -43,11 +44,11 @@ public class Solutions {
         this.id = id;
     }
 
-    public String getSolution() {
+    public byte[] getSolution() {
         return solution;
     }
 
-    public void setSolution(String solution) {
+    public void setSolution(byte[] solution) {
         this.solution = solution;
     }
 
@@ -59,20 +60,12 @@ public class Solutions {
         this.testCasesPassed = testCasesPassed;
     }
 
-    public int getScore() {
+    public long getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(long score) {
         this.score = score;
-    }
-
-    public String getLangUsed() {
-        return langUsed;
-    }
-
-    public void setLangUsed(String langUsed) {
-        this.langUsed = langUsed;
     }
 
     public Problems getProblems() {

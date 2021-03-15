@@ -2,6 +2,7 @@ package com.example.demo.Problems;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +13,13 @@ public class ProblemsController {
     @Autowired
     private ProblemsServices problemsServices;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/addProblems")
-    public void AddProblems(@RequestBody Problems problem){
-        problemsServices.add(problem);
+    @RequestMapping(method = RequestMethod.POST, value = "/user/{userId}/addProblems")
+    public void addProblems(@PathVariable long userId, @ModelAttribute ProblemsDTO problem) throws Exception{
+        problemsServices.addProblem(userId, problem);
     }
 
     @RequestMapping(value = "/problems/id/{id}")
-    public Optional<Problems> showProblemById(@PathVariable Long id){
+    public Problems showProblemById(@PathVariable Long id) throws Exception{
         return problemsServices.getProblemById(id);
     }
 

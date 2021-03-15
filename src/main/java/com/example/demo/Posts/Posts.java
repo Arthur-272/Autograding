@@ -1,5 +1,6 @@
 package com.example.demo.Posts;
 
+import com.example.demo.Classes.Classes;
 import com.example.demo.Comments.Comments;
 import com.example.demo.Users.Users;
 
@@ -16,23 +17,31 @@ public class Posts {
     private String description;
     private Date dateAdded;
 
+    @ManyToOne
+    private Users owner;
+
     @ManyToMany
     private List<Users> usersConcerning;
 
     @OneToMany
     private List<Comments> comments;
 
+    @ManyToOne
+    private Classes classes;
+
     public Posts() {
 
     }
 
-    public Posts(long id, String title, String description, Date dateAdded, List<Users> usersConcerning, List<Comments> comments) {
+    public Posts(long id, String title, String description, Date dateAdded, Users owner, List<Users> usersConcerning, List<Comments> comments, Classes classes) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dateAdded = dateAdded;
+        this.owner = owner;
         this.usersConcerning = usersConcerning;
         this.comments = comments;
+        this.classes = classes;
     }
 
     public long getId() {
@@ -81,5 +90,21 @@ public class Posts {
 
     public void setComments(List<Comments> comments) {
         this.comments = comments;
+    }
+
+    public Users getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Users owner) {
+        this.owner = owner;
+    }
+
+    public Classes getClasses() {
+        return classes;
+    }
+
+    public void setClasses(Classes classes) {
+        this.classes = classes;
     }
 }

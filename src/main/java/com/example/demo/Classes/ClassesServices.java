@@ -1,6 +1,5 @@
 package com.example.demo.Classes;
 
-import com.example.demo.Comments.Comments;
 import com.example.demo.Comments.CommentsServices;
 import com.example.demo.Posts.Posts;
 import com.example.demo.Posts.PostsServices;
@@ -8,12 +7,11 @@ import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepositories;
 import com.example.demo.Users.UsersServices;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +26,6 @@ public class ClassesServices {
 
     @Autowired
     private UsersServices usersServices;
-
-    @Autowired
-    private PostsServices postsServices;
 
     @Autowired
     private CommentsServices commentsServices;
@@ -69,7 +64,7 @@ public class ClassesServices {
             newClass.setStudents(students);
 
 //            Adding an empty list of posts/announcements in that class
-            List<com.example.demo.Posts.Posts> posts = new ArrayList<com.example.demo.Posts.Posts>();
+            List<Posts> posts = new ArrayList<com.example.demo.Posts.Posts>();
             newClass.setPosts(posts);
 
 //            Adding the class to the db
@@ -122,14 +117,13 @@ public class ClassesServices {
 
         if(studentIds != null) {
 
-            for (int i = 0; i < studentIds.length(); i++) {
-                long studentId = studentIds.getInt(i);
-
-                Users user = usersRepositories.findById(studentId).get();
-
 //        Checking if the user is the same as the owner of the class
-                if (classesRepositories.findById(classId).get().getOwnerId() == userId) {
+            if (classesRepositories.findById(classId).get().getOwnerId() == userId) {
 
+                for (int i = 0; i < studentIds.length(); i++) {
+                    long studentId = studentIds.getLong(i);
+
+                    Users user = usersRepositories.findById(studentId).get();
 //            Checking if the user is adding a student
                     if (user.getRole().equals("student")) {
                         Classes classes = classesRepositories.findById(classId).get();
@@ -149,12 +143,13 @@ public class ClassesServices {
                     } else {
                         throw new Exception("Not a student");
                     }
-                } else {
-                    throw new Exception("Invalid user accessing the class");
                 }
+            } else {
+                throw new Exception("Invalid user accessing the class");
             }
         } else{
             throw new Exception("No ids passed");
         }
     }
+
 }

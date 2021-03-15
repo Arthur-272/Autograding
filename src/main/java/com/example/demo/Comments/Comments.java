@@ -18,14 +18,18 @@ public class Comments {
     @ManyToOne
     private Users user;
 
+    @ManyToOne
+    private Posts post;
+
     public Comments() {
     }
 
-    public Comments(long id, String comment, Users user, Date dateAdded) {
+    public Comments(long id, String comment, Date dateAdded, Users user, Posts post) {
         this.id = id;
         this.comment = comment;
         this.dateAdded = dateAdded;
         this.user = user;
+        this.post = post;
     }
 
     public long getId() {
@@ -58,5 +62,13 @@ public class Comments {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public Posts getPost() {
+        return post;
+    }
+
+    public void setPost(Posts post) {
+        this.post = post;
     }
 }

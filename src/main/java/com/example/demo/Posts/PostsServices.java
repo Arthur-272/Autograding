@@ -4,6 +4,7 @@ import com.example.demo.Classes.Classes;
 import com.example.demo.Classes.ClassesRepositories;
 import com.example.demo.Comments.Comments;
 import com.example.demo.Users.Users;
+import com.example.demo.Users.UsersServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class PostsServices {
 
     @Autowired
     PostsRepositories postsRepositories;
+
+    @Autowired
+    private UsersServices usersServices;
 
     @Autowired
     private ClassesRepositories classesRepositories;
@@ -45,6 +49,10 @@ public class PostsServices {
 //            Setting the users concerned to the new Post.
             List<Users> userConcerned = new ArrayList<>();
             newPost.setUsersConcerning(userConcerned);
+
+//            Setting the current user as the owner of the post.
+            Users user = usersServices.getUserById(userId);
+            newPost.setOwner(user);
 
 //            Adding the new post in the db
             postsRepositories.save(newPost);

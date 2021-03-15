@@ -6,7 +6,9 @@ import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +24,30 @@ public class SolutionsServices {
     @Autowired
     private UsersRepositories usersRepositories;
 
-    public void addSolution(long userId, long problemId, Solutions solution) {
+    public void addSolution(long userId, long problemId, MultipartFile file) throws IOException {
         Problems problem = problemsRepositories.findById(problemId).get();
         Users user = usersRepositories.findById(userId).get();
-        long score = solution.getScore();
-        user.setScore((user.getScore() + score));
+
+        /*
+        * TODO: JUNIT
+        *  */
+
+        int testCasesPassed = 0;
+        long score = 0;
+        user.setScore(user.getScore() + score);
+        Solutions solution = new Solutions(
+                file.getBytes(),
+                testCasesPassed,
+                score,
+                problem,
+                user
+
+        );
 
 //        Updating the score based on test cases passed
         usersRepositories.save(user);
-        solution.setUsers(user);
-        solution.setProblems(problem);
+
+//        Adding the solution to the database
         solutionsRepositories.save(solution);
     }
 

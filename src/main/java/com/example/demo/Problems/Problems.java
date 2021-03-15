@@ -1,9 +1,11 @@
 package com.example.demo.Problems;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.example.demo.Users.Users;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.*;
+import java.io.File;
+import java.util.Date;
 
 @Entity
 public class Problems {
@@ -13,18 +15,22 @@ public class Problems {
     private long id;
     private String statement;
     private String title;
-    private String solution;
+    @Lob
+    private byte[] solution;
     private double score;
     private int numOfTestCases;
-    private String testCasesFile;
+    @Lob
+    private byte[] testCasesFile;
     private String category;
     private String difficulty;
-//    private Date problemDate;
+    private Date problemDate;
+
+    @ManyToOne
+    private Users author;
 
     public Problems() {}
-    
-    public Problems(long id, String statement, String title, String solution, double score, int numOfTestCases, String testCasesFile, String category, String difficulty) {
-        this.id = id;
+
+    public Problems(String statement, String title, byte[] solution, double score, int numOfTestCases, byte[] testCasesFile, String category, String difficulty) {
         this.statement = statement;
         this.title = title;
         this.solution = solution;
@@ -59,11 +65,11 @@ public class Problems {
         this.title = problemTitle;
     }
 
-    public String getSolution() {
+    public byte[] getSolution() {
         return solution;
     }
 
-    public void setSolution(String problemSolution) {
+    public void setSolution(byte[] problemSolution) {
         this.solution = problemSolution;
     }
 
@@ -83,11 +89,11 @@ public class Problems {
         this.numOfTestCases = numOfTestCases;
     }
 
-    public String getTestCasesFile() {
+    public byte[] getTestCasesFile() {
         return testCasesFile;
     }
 
-    public void setTestCasesFile(String testCasesFile) {
+    public void setTestCasesFile(byte[] testCasesFile) {
         this.testCasesFile = testCasesFile;
     }
 
@@ -105,5 +111,21 @@ public class Problems {
 
     public void setDifficulty(String problemDifficulty) {
         this.difficulty = problemDifficulty;
+    }
+
+    public Date getProblemDate() {
+        return problemDate;
+    }
+
+    public void setProblemDate(Date problemDate) {
+        this.problemDate = problemDate;
+    }
+
+    public Users getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Users author) {
+        this.author = author;
     }
 }

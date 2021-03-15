@@ -4,6 +4,7 @@ import com.example.demo.Posts.Posts;
 import com.example.demo.Users.Users;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,6 +15,7 @@ public class Classes {
     private String name;
     private String description;
     private long ownerId;
+    private Date createdAt;
 
     @ManyToMany
     private List<Users> students;
@@ -27,11 +29,12 @@ public class Classes {
     public Classes() {
     }
 
-    public Classes(long id, String name, String description, long ownerId, List<Users> students, List<Users> teachers, List<com.example.demo.Posts.Posts> posts) {
+    public Classes(long id, String name, String description, long ownerId, Date createdAt, List<Users> students, List<Users> teachers, List<Posts> posts) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.ownerId = ownerId;
+        this.createdAt = createdAt;
         this.students = students;
         this.teachers = teachers;
         this.posts = posts;
@@ -85,11 +88,19 @@ public class Classes {
         this.teachers = teachers;
     }
 
-    public List<com.example.demo.Posts.Posts> getPosts() {
+    public List<Posts> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<com.example.demo.Posts.Posts> posts) {
+    public void setPosts(List<Posts> posts) {
         this.posts = posts;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

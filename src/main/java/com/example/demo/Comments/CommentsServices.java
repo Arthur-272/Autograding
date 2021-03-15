@@ -1,6 +1,7 @@
 package com.example.demo.Comments;
 
 import com.example.demo.Classes.ClassesRepositories;
+import com.example.demo.Posts.Posts;
 import com.example.demo.Posts.PostsRepositories;
 import com.example.demo.Posts.PostsServices;
 import com.example.demo.Users.Users;
@@ -8,7 +9,6 @@ import com.example.demo.Users.UsersRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class CommentsServices {
             comment.setUser(user);
 
 //        Getting the post to which the comment is being added
-            com.example.demo.Posts.Posts post = postsServices.findPostById(postId).get();
+            Posts post = postsServices.findPostById(postId).get();
 
 //        Getting the list of comments already present in the posts
             List<Comments> commentsInPost = post.getComments();

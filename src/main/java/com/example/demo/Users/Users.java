@@ -1,7 +1,11 @@
 package com.example.demo.Users;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Date;
 
 
 @Entity
@@ -15,14 +19,14 @@ public class Users {
     private String mobile;
     private long score;
     private String role;
-    //public Date lastLoggedInDate;
+    private Date registeredDate;
+    private Date lastLoggedInDate;
 
     public Users(){
 
     }
 
-
-    public Users(int id, String firstName, String lastName, String password, String mobile, int score, String role) {
+    public Users(long id, String firstName, String lastName, String password, String mobile, long score, String role, Date registeredDate, Date lastLoggedInDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -30,6 +34,8 @@ public class Users {
         this.mobile = mobile;
         this.score = score;
         this.role = role;
+        this.registeredDate = registeredDate;
+        this.lastLoggedInDate = lastLoggedInDate;
     }
 
     public long getId() {
@@ -88,11 +94,19 @@ public class Users {
         this.role = role;
     }
 
-    /*public Date getLastLoggedInDate() {
+    public Date getRegisteredDate() {
+        return registeredDate;
+    }
+
+    public void setRegisteredDate(Date registeredDate) {
+        this.registeredDate = registeredDate;
+    }
+
+    public Date getLastLoggedInDate() {
         return lastLoggedInDate;
     }
 
     public void setLastLoggedInDate(Date lastLoggedInDate) {
         this.lastLoggedInDate = lastLoggedInDate;
-    }*/
+    }
 }
