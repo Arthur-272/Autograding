@@ -67,17 +67,16 @@ public class CommentsServices {
     }
 
     public List<Comments> showAllComments(long userId, long classId, long postId) throws Exception{
-
         List<Comments> list;
-
         if(classesRepositories.findById(classId).get().getStudents().contains(usersRepositories.findById(userId).get()) ||
                 classesRepositories.findById(classId).get().getTeachers().contains(usersRepositories.findById(userId).get())) {
-
             list = postsServices.findPostById(postId).get().getComments();
-
         } else{
             throw new Exception("User not a member of the class");
         }
         return list;
+    }
+    public void deleteById(long id) {
+        commentsRepositories.deleteById(id);
     }
 }

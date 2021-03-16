@@ -43,4 +43,9 @@ public class ProblemsController {
         return problemsServices.getProblemByTitle(problemTitle);
     }
 
+    @DeleteMapping(value ="/problems/{id}")
+    public void deleteProblem(@PathVariable String id){
+        problemsServices.deleteProblemByAuthorId(id);
+    }
+
 }

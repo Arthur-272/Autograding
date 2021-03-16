@@ -5,12 +5,14 @@ import com.example.demo.Users.UsersServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProblemsServices {
 
     @Autowired
@@ -82,5 +84,13 @@ public class ProblemsServices {
         List<Problems> list = new ArrayList<>();
         problemsRepositories.findByDifficultyIgnoreCase(problemDifficulty).forEach(list::add);
         return list;
+    }
+
+//    public void deleteByUserId(long userId){
+//        problemsRepositories.();
+//    }
+
+    public void deleteProblemByAuthorId(String id){
+        problemsRepositories.deleteProblemByAuthorId(id);
     }
 }

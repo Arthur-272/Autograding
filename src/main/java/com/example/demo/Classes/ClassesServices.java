@@ -7,15 +7,18 @@ import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepositories;
 import com.example.demo.Users.UsersServices;
 import org.json.JSONArray;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ClassesServices {
 
     @Autowired
@@ -26,6 +29,9 @@ public class ClassesServices {
 
     @Autowired
     private UsersServices usersServices;
+
+    @Autowired
+    private PostsServices postsServices;
 
     @Autowired
     private CommentsServices commentsServices;
@@ -44,7 +50,6 @@ public class ClassesServices {
     public boolean isOwner(long ownerId, long classId){
         return classesRepositories.findById(classId).get().getOwnerId() == ownerId;
     }
-
 
     public List<Classes> getClassesByOwnerId(long id){
         return classesRepositories.getAllByOwnerId(id);
@@ -75,38 +80,20 @@ public class ClassesServices {
     }
 
     public void addTeachers(long userId, long classId, JSONArray teacherIds) throws Exception{
-
         if(teacherIds != null) {
-
-            for(int i=0;i<teacherIds.length();i++) {
-
-                long teacherId = teacherIds.getInt(i);
-
-//        Checking if the user is the same as the owner of the class
-                if (isOwner(userId, classId)) {
-//            Checking if the user is adding a teacher
-
-                    if (usersServices.isTeacher(teacherId)) {
-                        Classes classes = classesRepositories.findById(classId).get();
-                        List<Long> teachersId = new ArrayList<>();
-                        classes.getTeachers().forEach(teachers -> teachersId.add(teachers.getId()));
-
-//                Checking if the teacher the user is trying to add already exists in the class
-                        if (teachersId.contains(teacherId)) {
-                            throw new Exception("Teacher already in class");
-                        } else {
-                            Users newTeacher = usersRepositories.findById(teacherId).get();
-                            List<Users> teachers = classes.getTeachers();
-                            teachers.add(newTeacher);
-                            classes.setTeachers(teachers);
-                        }
-                        classesRepositories.save(classes);
-                    } else {
-                        throw new Exception("Not a teacher");
+            if(classesRepositories.findById(classId).get().getTeachers().contains(usersServices.getUserById(userId))){
+                List<Users> inClass = classesRepositories.findById(classId).get().getTeachers();
+                for(int i=0;i<teacherIds.length();i++){
+                    long teacherId = teacherIds.getLong(i);
+                    if(!inClass.contains(usersServices.getUserById(teacherId))){
+                        inClass.add(usersServices.getUserById(teacherId));
+                    } else{
+                        System.out.println(userId + " is already in class");
                     }
-                } else {
-                    throw new Exception("Invalid user accessing the class");
                 }
+                classesRepositories.findById(classId).get().setTeachers(inClass);
+            } else{
+                throw new Exception(userId + " is not a teacher");
             }
         } else{
             throw new Exception("No ids passed");
@@ -114,42 +101,112 @@ public class ClassesServices {
     }
 
     public void addStudent(long userId, long classId, JSONArray studentIds) throws Exception {
-
         if(studentIds != null) {
-
-//        Checking if the user is the same as the owner of the class
-            if (classesRepositories.findById(classId).get().getOwnerId() == userId) {
-
+            if (classesRepositories.findById(classId).get().getTeachers().contains(usersServices.getUserById(userId))) {
+                List<Users> inClass = classesRepositories.findById(classId).get().getStudents();
                 for (int i = 0; i < studentIds.length(); i++) {
                     long studentId = studentIds.getLong(i);
-
-                    Users user = usersRepositories.findById(studentId).get();
-//            Checking if the user is adding a student
-                    if (user.getRole().equals("student")) {
-                        Classes classes = classesRepositories.findById(classId).get();
-                        List<Long> studentsId = new ArrayList<>();
-                        classes.getStudents().forEach(students -> studentsId.add(students.getId()));
-
-//                Checking if the student the user is trying to add already exists in the class
-                        if (studentsId.contains(studentId)) {
-                            throw new Exception("Student already in class");
-                        } else {
-                            Users newStudent = usersRepositories.findById(studentId).get();
-                            List<Users> students = classes.getStudents();
-                            students.add(newStudent);
-                            classes.setStudents(students);
+                    if(usersServices.isStudent(studentId)){
+                        if(!inClass.contains(usersServices.getUserById(studentId))){
+                            inClass.add(usersServices.getUserById(studentId));
+                            System.out.println(studentId + " is added in class");
+                        } else{
+                            System.out.println(studentId + " already in class");
                         }
-                        classesRepositories.save(classes);
-                    } else {
-                        throw new Exception("Not a student");
+                    } else{
+                        System.out.println(studentId + " is not a student");
                     }
                 }
+                classesRepositories.findById(classId).get().setStudents(inClass);
             } else {
                 throw new Exception("Invalid user accessing the class");
             }
         } else{
             throw new Exception("No ids passed");
         }
+    }
+
+    public void deleteStudent(long userId, long classId, JSONArray studentIds) throws Exception{
+        if(studentIds != null){
+            if(classesRepositories.findById(classId).get().getTeachers().contains(usersServices.getUserById(userId))){
+                List<Users> inClass = classesRepositories.findById(classId).get().getStudents();
+                for(int i=0;i<studentIds.length();i++){
+                    if(!inClass.isEmpty()) {
+                        long studentId = studentIds.getLong(i);
+                        if (inClass.contains(usersServices.getUserById(studentId))) {
+                            inClass.remove(usersServices.getUserById(studentId));
+                            System.out.println(studentId + " is removed");
+                        } else {
+                            System.out.println("No such student with id " + studentId);
+                        }
+                    } else{
+                        throw new Exception("Class empty");
+                    }
+                }
+                classesRepositories.findById(classId).get().setStudents(inClass);
+            } else{
+                throw new Exception("Invalid user accessing the class");
+            }
+        } else{
+            throw new Exception("No student's list passed");
+        }
+    }
+
+    public void deleteTeacher(long userId, long classId, JSONArray teacherIds) throws Exception{
+        if(teacherIds != null){
+            if(isOwner(userId, classId)){
+                List<Users> inClass = classesRepositories.findById(classId).get().getTeachers();
+                for(int i=0;i< teacherIds.length();i++){
+                    long teacherId = teacherIds.getLong(i);
+                    if(teacherId != userId) {
+                        if (inClass.contains(usersServices.getUserById(teacherId))) {
+                            inClass.remove(usersServices.getUserById(teacherId));
+                            System.out.println(teacherId + " is removed");
+                        } else {
+                            System.out.println(teacherId + " is not in class");
+                        }
+                    } else{
+                        throw new Exception("YOu cannot delete owner from the class");
+                    }
+                }
+                classesRepositories.findById(classId).get().setTeachers(inClass);
+            } else{
+                throw new Exception("Invalid user accessing the class");
+            }
+        } else{
+            throw new Exception("No teacher's list passed");
+        }
+    }
+
+    public void deleteClass(long userId, long classId) throws Exception{
+        if(isOwner(userId, classId)){
+            List<Posts> posts = classesRepositories.findById(classId).get().getPosts();
+            for(Posts post : posts){
+                postsServices.deleteById(post.getId());
+            }
+            System.out.println("Class deleted");
+        } else{
+            throw new Exception("Invalid user trying to access the class");
+        }
+    }
+
+    public List<Classes> findAllByUserId(long userId) throws Exception{
+        return classesRepositories.getAllByOwnerId(userId);
+    }
+    public Classes findById(long id) {
+        return classesRepositories.findById(id).get();
+    }
+
+    public void updateClass(Classes classes) {
+        classesRepositories.save(classes);
+    }
+
+    public List<Users> getAllTeachersByClassId(long classId){
+        return classesRepositories.findById(classId).get().getTeachers();
+    }
+
+    public List<Users> getAllStudentsByClassId(long classId){
+        return classesRepositories.findById(classId).get().getStudents();
     }
 
 }

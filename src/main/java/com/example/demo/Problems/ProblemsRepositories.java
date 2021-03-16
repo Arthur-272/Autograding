@@ -1,7 +1,10 @@
 package com.example.demo.Problems;
 
 import com.example.demo.Problems.Problems;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,4 +17,11 @@ public interface ProblemsRepositories extends CrudRepository <Problems, Long> {
 
     List<Problems> findByDifficultyIgnoreCase(String difficulty);
 
+    @Modifying
+//    @Query(value = "delete from Problems p  where p.author_id = :id", nativeQuery = true)
+    @Query(value = "delete from Problems p where p.author.id = (select u.id from Users u where u.firstName = :id)")
+    void deleteProblemByAuthorId(@Param("id") String authorId);
+
+
 }
+// /user/98/classes

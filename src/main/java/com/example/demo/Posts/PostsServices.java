@@ -2,9 +2,12 @@ package com.example.demo.Posts;
 
 import com.example.demo.Classes.Classes;
 import com.example.demo.Classes.ClassesRepositories;
+import com.example.demo.Classes.ClassesServices;
 import com.example.demo.Comments.Comments;
+import com.example.demo.Comments.CommentsServices;
 import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersServices;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +26,18 @@ public class PostsServices {
     private UsersServices usersServices;
 
     @Autowired
-    private ClassesRepositories classesRepositories;
+    private CommentsServices commentsServices;
+
+    @Autowired
+    private ClassesServices classesServices;
 
     public Optional<Posts> findPostById(long id){
         return postsRepositories.findById(id);
     }
 
-    public boolean isOwner(long ownerId, long classId){
-        return classesRepositories.findById(classId).get().getOwnerId() == ownerId;
-    }
-
     public void createPost(long userId, long classId, Posts newPost) throws Exception{
-        if(isOwner(userId, classId)){
-            Classes classes = classesRepositories.findById(classId).get();
+        if(classesServices.getAllTeachersByClassId(classId).contains(usersServices.getUserById(userId))){
+            Classes classes = classesServices.findById(classId);
             List<Posts> postsInClass = classes.getPosts();
 
 //            Setting the current date to the new Post.
@@ -62,10 +64,39 @@ public class PostsServices {
             classes.setPosts(postsInClass);
 
 //            Saving changes to the db
-            classesRepositories.save(classes);
+            classesServices.updateClass(classes);
 
         } else{
             throw new Exception("Invalid user accessing the class");
         }
+    }
+
+    public void addConcerningUsers(long userId, long classId, long id, JSONArray usersIds) throws Exception{
+        if(postsRepositories.findById(id).get().getClasses().getId() == classId){
+            if(postsRepositories.findById(id).get().getOwner().getId() == userId){
+                List<Users> userConcerned = postsRepositories.findById(id).get().getUsersConcerning();
+                for(int i=0;i< usersIds.length();i++){
+                    long inListUserId = usersIds.getLong(i);
+                    if(!userConcerned.contains(usersServices.getUserById(inListUserId))){
+                        userConcerned.add(usersServices.getUserById(inListUserId));
+                    } else{
+                        System.out.println("User already added in the posts");
+                    }
+                }
+                postsRepositories.findById(id).get().setUsersConcerning(userConcerned);
+            } else{
+                throw new Exception("You are not permitted to do changes this post");
+            }
+        } else{
+            throw new Exception("Post_" + id + " does not exist in this class");
+        }
+    }
+
+    public void deleteById(long id) {
+        List<Comments> comments = postsRepositories.findById(id).get().getComments();
+        for(Comments comment : comments){
+            commentsServices.deleteById(comment.getId());
+        }
+        postsRepositories.deleteById(id);
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.Posts.Posts;
 import com.example.demo.Users.Users;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
