@@ -70,6 +70,7 @@ public class PostsServices {
             throw new Exception("Invalid user accessing the class");
         }
     }
+/*
 
     public void addConcerningUsers(long userId, long classId, long id, JSONArray usersIds) throws Exception{
         if(postsRepositories.findById(id).get().getClasses().getId() == classId){
@@ -92,6 +93,28 @@ public class PostsServices {
         }
     }
 
+    public void removeUserFromPost(long userId, long classId, long id, JSONArray usersIds) throws Exception{
+        if(postsRepositories.findById(id).get().getClasses().getId() == classId){
+            if(postsRepositories.findById(id).get().getOwner().getId() == userId){
+                List<Users> userConcerned = postsRepositories.findById(id).get().getUsersConcerning();
+                for(int i=0;i< usersIds.length();i++){
+                    long inListUserId = usersIds.getLong(i);
+                    if(userConcerned.contains(usersServices.getUserById(inListUserId))){
+                        userConcerned.remove(usersServices.getUserById(inListUserId));
+                    } else{
+                        System.out.println("User does not exits in the posts");
+                    }
+                }
+                postsRepositories.findById(id).get().setUsersConcerning(userConcerned);
+            } else{
+                throw new Exception("You are not permitted to do changes this post");
+            }
+        } else{
+            throw new Exception("Post_" + id + " does not exist in this class");
+        }
+    }
+
+*/
     public void deleteById(long id) {
         List<Comments> comments = postsRepositories.findById(id).get().getComments();
         for(Comments comment : comments){

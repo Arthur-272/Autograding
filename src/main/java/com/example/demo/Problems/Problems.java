@@ -1,6 +1,7 @@
 package com.example.demo.Problems;
 
 import com.example.demo.Users.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -16,10 +17,12 @@ public class Problems {
     private String statement;
     private String title;
     @Lob
+    @JsonIgnore
     private byte[] solution;
     private double score;
     private int numOfTestCases;
     @Lob
+    @JsonIgnore
     private byte[] testCasesFile;
     private String category;
     private String difficulty;

@@ -1,5 +1,6 @@
 package com.example.demo.Users;
 
+import com.example.demo.Classes.Classes;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Entity;

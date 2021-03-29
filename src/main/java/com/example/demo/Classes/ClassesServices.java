@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -63,6 +60,8 @@ public class ClassesServices {
             List<Users> teachers = new ArrayList<Users>();
             teachers.add(user);
             newClass.setTeachers(teachers);
+
+            newClass.setCreatedAt(new Date());
 
 //            Adding an empty list as students in that class
             List<Users> students = new ArrayList<Users>();

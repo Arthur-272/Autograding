@@ -24,6 +24,7 @@ public class ProblemsServices {
     public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
 
         if(usersServices.checkIfUserExists(userId)) {
+
             Problems problem = new Problems(
                     problemDTO.getStatement(),
                     problemDTO.getTitle(),
