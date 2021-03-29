@@ -1,12 +1,15 @@
 package com.example.demo.Problems;
 
+import com.example.demo.TestCases.TestCases;
 import com.example.demo.Users.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Problems {
@@ -21,9 +24,12 @@ public class Problems {
     private byte[] solution;
     private double score;
     private int numOfTestCases;
-    @Lob
-    @JsonIgnore
-    private byte[] testCasesFile;
+//    @Lob
+//    @JsonIgnore
+//    private byte[] testCasesFile;
+    @OneToMany
+    private List<TestCases> testCases = new ArrayList<>();
+
     private String category;
     private String difficulty;
     private Date problemDate;
@@ -33,13 +39,12 @@ public class Problems {
 
     public Problems() {}
 
-    public Problems(String statement, String title, byte[] solution, double score, int numOfTestCases, byte[] testCasesFile, String category, String difficulty) {
+    public Problems(String statement, String title, byte[] solution, double score, int numOfTestCases,  String category, String difficulty) {
         this.statement = statement;
         this.title = title;
         this.solution = solution;
         this.score = score;
         this.numOfTestCases = numOfTestCases;
-        this.testCasesFile = testCasesFile;
         this.category = category;
         this.difficulty = difficulty;
     }
@@ -92,12 +97,12 @@ public class Problems {
         this.numOfTestCases = numOfTestCases;
     }
 
-    public byte[] getTestCasesFile() {
-        return testCasesFile;
+    public List<TestCases> getTestCases() {
+        return testCases;
     }
 
-    public void setTestCasesFile(byte[] testCasesFile) {
-        this.testCasesFile = testCasesFile;
+    public void setTestCases(List<TestCases> testCases) {
+        this.testCases = testCases;
     }
 
     public String getCategory() {

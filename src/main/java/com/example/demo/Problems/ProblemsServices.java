@@ -21,7 +21,7 @@ public class ProblemsServices {
     @Autowired
     private UsersServices usersServices;
 
-    public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
+    /*public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
 
         if(usersServices.checkIfUserExists(userId)) {
 
@@ -32,6 +32,28 @@ public class ProblemsServices {
                     problemDTO.getScore(),
                     problemDTO.getNumOfTestCases(),
                     problemDTO.getTestCasesFile().getBytes(),
+                    problemDTO.getCategory(),
+                    problemDTO.getDifficulty()
+            );
+            problem.setProblemDate(new Date());
+            problem.setAuthor(usersServices.getUserById(userId));
+
+            problemsRepositories.save(problem);
+        }else{
+            throw new Exception("User does not exists...");
+        }
+    }*/
+
+    public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
+
+        if(usersServices.checkIfUserExists(userId)) {
+
+            Problems problem = new Problems(
+                    problemDTO.getStatement(),
+                    problemDTO.getTitle(),
+                    problemDTO.getSolution().getBytes(),
+                    problemDTO.getScore(),
+                    problemDTO.getNumOfTestCases(),
                     problemDTO.getCategory(),
                     problemDTO.getDifficulty()
             );

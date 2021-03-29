@@ -1,6 +1,7 @@
 package com.example.demo.Users;
 
 import com.example.demo.Classes.Classes;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Entity;
@@ -16,10 +17,13 @@ public class Users {
     private long id;
     private String firstName;
     private String lastName;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String mobile;
     private long score;
     private String role;
+    @JsonIgnore
     private Date registeredDate;
     private Date lastLoggedInDate;
 

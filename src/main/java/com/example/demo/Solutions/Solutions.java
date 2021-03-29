@@ -2,6 +2,7 @@ package com.example.demo.Solutions;
 
 import com.example.demo.Problems.Problems;
 import com.example.demo.Users.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -16,18 +17,22 @@ public class Solutions {
     @ManyToOne
     private Users users;
     private int testCasesPassed;
+    private int testCasesFailed;
     private long score;
 
     @ManyToOne
+    @JsonIgnore
     private Problems problems;
 
     @Lob
+    @JsonIgnore
     private byte[] solution;
 
 
-    public Solutions(byte[] solution, int testCasesPassed, long score, Problems problems, Users users) throws IOException {
+    public Solutions(byte[] solution, int testCasesPassed, int testCasesFailed,long score, Problems problems, Users users) throws IOException {
         this.solution = solution;
         this.testCasesPassed = testCasesPassed;
+        this.testCasesFailed = testCasesFailed;
         this.score = score;
         this.problems = problems;
         this.users = users;
@@ -82,5 +87,13 @@ public class Solutions {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public int getTestCasesFailed() {
+        return testCasesFailed;
+    }
+
+    public void setTestCasesFailed(int testCasesFailed) {
+        this.testCasesFailed = testCasesFailed;
     }
 }
