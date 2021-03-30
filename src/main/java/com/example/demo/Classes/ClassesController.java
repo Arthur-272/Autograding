@@ -1,15 +1,10 @@
 package com.example.demo.Classes;
 
-import com.example.demo.Test.Model;
-import org.apache.tomcat.util.json.JSONParser;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ClassesController {

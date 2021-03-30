@@ -1,11 +1,10 @@
 package com.example.demo.Problems;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ProblemsController {
@@ -13,39 +12,53 @@ public class ProblemsController {
     @Autowired
     private ProblemsServices problemsServices;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/user/{userId}/addProblems")
-    public void addProblems(@PathVariable long userId, @ModelAttribute ProblemsDTO problem) throws Exception{
+    @PostMapping("/user/{userId}/addProblems")
+    public void addProblems(@PathVariable long userId,
+                            @ModelAttribute ProblemsDTO problem) throws Exception{
         problemsServices.addProblem(userId, problem);
     }
 
-    @RequestMapping(value = "/problems/id/{id}")
+    @GetMapping("/problems/id/{id}")
     public Problems showProblemById(@PathVariable Long id) throws Exception{
         return problemsServices.getProblemById(id);
     }
 
-    @RequestMapping(value = "/problems")
+    @GetMapping("/problems")
     public List<Problems> showAllProblems(){
         return problemsServices.getAllProblems();
     }
 
-    @RequestMapping(value = "/problems/category/{problemCategory}")
+    @GetMapping("/problems/category/{problemCategory}")
     public List<Problems> showProblemsByCategory(@PathVariable String problemCategory){
         return problemsServices.getProblemByCategory(problemCategory);
     }
 
-    @RequestMapping(value = "/problems/difficulty/{problemDifficulty}")
+    @GetMapping("/problems/difficulty/{problemDifficulty}")
     public List<Problems> showProblemsByDifficulty(@PathVariable String problemDifficulty){
         return problemsServices.getProblemByDifficulty(problemDifficulty);
     }
 
-    @RequestMapping(value = "/problems/{problemTitle}")
+    @GetMapping("/problems/{problemTitle}")
     public List<Problems> showProblemsByTitle(@PathVariable String problemTitle){
         return problemsServices.getProblemByTitle(problemTitle);
     }
 
-    @DeleteMapping(value ="/problems/{id}")
-    public void deleteProblem(@PathVariable String id){
-        problemsServices.deleteProblemByAuthorId(id);
+    @DeleteMapping("/user/{userId}/problem/{problemId}")
+    public ResponseEntity deleteProblem(@PathVariable Long userId,
+                                        @PathVariable Long problemId){
+        try{
+            return problemsServices.deleteProblemByProblemId(userId, problemId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/user/{userId}/problem/{problemId}")
+    public ResponseEntity updateProblemByProblemId(@ModelAttribute ProblemsDTO problemsDTO,
+                                                   @PathVariable Long userId,
+                                                   @PathVariable Long problemId){
+        return problemsServices.updateProblemByProblemId(userId, problemId, problemsDTO);
     }
 
 }

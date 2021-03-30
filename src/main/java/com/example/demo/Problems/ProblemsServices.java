@@ -1,11 +1,19 @@
 package com.example.demo.Problems;
 
-import com.example.demo.Users.UsersRepositories;
+import com.example.demo.Solutions.SolutionsServices;
+import com.example.demo.TestCases.TestCases;
+import com.example.demo.TestCases.TestCasesRepository;
+import com.example.demo.TestCases.TestCasesServices;
+import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersServices;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,28 +29,14 @@ public class ProblemsServices {
     @Autowired
     private UsersServices usersServices;
 
-    /*public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
+    @Autowired
+    private TestCasesServices testCasesServices;
 
-        if(usersServices.checkIfUserExists(userId)) {
+    @Autowired
+    private SolutionsServices solutionsServices;
 
-            Problems problem = new Problems(
-                    problemDTO.getStatement(),
-                    problemDTO.getTitle(),
-                    problemDTO.getSolution().getBytes(),
-                    problemDTO.getScore(),
-                    problemDTO.getNumOfTestCases(),
-                    problemDTO.getTestCasesFile().getBytes(),
-                    problemDTO.getCategory(),
-                    problemDTO.getDifficulty()
-            );
-            problem.setProblemDate(new Date());
-            problem.setAuthor(usersServices.getUserById(userId));
-
-            problemsRepositories.save(problem);
-        }else{
-            throw new Exception("User does not exists...");
-        }
-    }*/
+    @Autowired
+    private TestCasesRepository testCasesRepository;
 
     public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
 
@@ -109,11 +103,68 @@ public class ProblemsServices {
         return list;
     }
 
-//    public void deleteByUserId(long userId){
-//        problemsRepositories.();
-//    }
+    public ResponseEntity deleteProblemByProblemId(Long userId, Long problemId){
+        Users user = usersServices.getUserById(userId);
+        if(user != null) {
+            Optional<Problems> problem = problemsRepositories.findById(problemId);
+            if (problem.isPresent() & problem.get().getAuthor().equals(user)) {
+                List<Long> listOfTestCaseIds = new ArrayList<>();
+                problem.get().getTestCases().forEach(testCase -> {
+                    listOfTestCaseIds.add(testCase.getId());
+                });
+                for(Long testCaseId : listOfTestCaseIds){
+                    try {
+                        testCasesServices.deleteTestCases(userId, problemId, testCaseId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    solutionsServices.deleteSolutionsByProblemId(problemId);
+                    problemsRepositories.deleteById(problemId);
+                    return ResponseEntity.ok().build();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    public void deleteProblemByAuthorId(String id){
-        problemsRepositories.deleteProblemByAuthorId(id);
+    public ResponseEntity updateProblemByProblemId(Long userId, Long problemId, ProblemsDTO updatedProblemDTO){
+        Users user = usersServices.getUserById(userId);
+        if(user != null){
+            Optional<Problems> problem = problemsRepositories.findById(problemId);
+            if(problem.isPresent() & problem.get().getAuthor().equals(user)){
+                Problems updatedProblem = null;
+                try {
+                    updatedProblem = new Problems(
+                            updatedProblemDTO.getStatement(),
+                            updatedProblemDTO.getTitle(),
+                            updatedProblemDTO.getSolution().getBytes(),
+                            updatedProblemDTO.getScore(),
+                            updatedProblemDTO.getNumOfTestCases(),
+                            updatedProblemDTO.getCategory(),
+                            updatedProblemDTO.getDifficulty()
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                assert updatedProblem != null;
+                updatedProblem.setId(problemId);
+                updatedProblem.setProblemDate(new Date());
+                updatedProblem.setAuthor(user);
+                problemsRepositories.save(updatedProblem);
+                return ResponseEntity.ok().build();
+            } else{
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }

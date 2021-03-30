@@ -1,6 +1,7 @@
 package com.example.demo.Solutions;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +34,16 @@ public class SolutionsController {
         return solutionsServices.getSolutionsByUserId(userId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/user/{userId}/problems/{problemId}/updateSolution")
-    public void updateSolution(@PathVariable long userId, @PathVariable long problemId, @RequestBody Solutions solution){
-//        solutionsServices.updateSolution(solution);
+    @PutMapping("/user/{userId}/problems/{problemId}/solution")
+    public ResponseEntity updateSolution(@PathVariable Long userId,
+                                         @PathVariable Long problemId,
+                                         @RequestParam Long solutionId,
+                                         @RequestBody MultipartFile solution){
+        try {
+            return solutionsServices.updateSolution(userId, problemId, solutionId, solution);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

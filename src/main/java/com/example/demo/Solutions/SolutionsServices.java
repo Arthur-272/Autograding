@@ -10,7 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,9 +83,9 @@ public class SolutionsServices {
     public ResponseEntity addSolution(long userId, long problemId, MultipartFile file) throws Exception {
 
         Optional<Users> user = usersRepositories.findById(userId);
-        if(user.isPresent()){
+        if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
-            if(problem.isPresent()){
+            if (problem.isPresent()) {
 
                 List<TestCases> testCases = problem.get().getTestCases();
                 if (testCases == null)
@@ -109,20 +112,20 @@ public class SolutionsServices {
                 solutionsRepositories.save(solution);
 
                 return ResponseEntity.accepted().build();
-            } else{
+            } else {
                 return ResponseEntity.notFound().build();
             }
-        } else{
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    public int evaluate(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception{
+    public int evaluate(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
         int count = 0;
         String cmd = "cmd /c javac " + file.getAbsolutePath();
         Process process = Runtime.getRuntime().exec(cmd);
         process.waitFor();
-        for(TestCases testCase : testCases){
+        for (TestCases testCase : testCases) {
             String input = testCase.getInput();
             String output = testCase.getOutput();
 
@@ -142,11 +145,11 @@ public class SolutionsServices {
                     System.out.println(line);
                 }
 
-                try{
+                try {
 //                    System.out.println(userOutput + " " + output);
                     assertEquals(userOutput, output);
                     count++;
-                } catch (AssertionError ae){
+                } catch (AssertionError ae) {
                     System.out.println("Failed");
                 }
             } catch (IOException e) {
@@ -160,7 +163,7 @@ public class SolutionsServices {
         return count;
     }
 
-    public String getCurrentProjectDirectory() throws Exception{
+    public String getCurrentProjectDirectory() throws Exception {
         String cmd = "cmd /c cd";
         Process process = Runtime.getRuntime().exec("cmd /c cd");
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -216,25 +219,58 @@ public class SolutionsServices {
         return solutionsRepositories.findAllByProblems_Id(problemId);
     }
 
-    public List<Solutions> getSolutionsByUserId(Long userId){
+    public List<Solutions> getSolutionsByUserId(Long userId) {
         return solutionsRepositories.findAllByUsersId(userId);
     }
 
-    /**
-     * TODO: Think about how to get that particular solution id so that we can update that exact solution.
-     * One way is to make that id meaningful rather than just numbers like, 98 (user id) + 1 (problem id) = 981
-     * */
-    /*public void updateSolution(Solutions solution){
-        Solutions previousSolution;
-        long previousScore = previousSolution.getScore();
+    public void deleteSolutionsByProblemId(Long problemId) {
+        solutionsRepositories.deleteSolutionsByProblemId(problemId);
+    }
 
-//        Subtracting the previous solution's score from the user and updating it in Solution table
-        Users user = solution.getUsers();
-        System.out.println(previousScore);
-        user.setScore((user.getScore() - previousScore));
-        solution.setUsers(user);
+    public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
+        Optional<Users> user = usersRepositories.findById(userId);
+        if (user.isPresent()) {
+            Optional<Problems> problem = problemsRepositories.findById(problemId);
+            if (problem.isPresent()) {
+                Optional<Solutions> previousSolution = solutionsRepositories.findById(solutionId);
+                if(previousSolution.isPresent()){
+                    long previousScore = previousSolution.get().getScore();
+                    user.get().setScore((user.get().getScore() - previousScore));
 
-        solutionsRepositories.save(solution);
-    }*/
+                    List<TestCases> testCases = problem.get().getTestCases();
+                    if (testCases == null)
+                        return ResponseEntity.noContent().build();
 
+                    String currentProjectDirectory = getCurrentProjectDirectory();
+                    currentProjectDirectory += "\\src\\main\\resources\\Submissions\\";
+                    File userSolution = new File(currentProjectDirectory + file.getOriginalFilename());
+                    file.transferTo(userSolution);
+                    int totalTestCases = problem.get().getNumOfTestCases();
+                    int testCasesPassed = evaluate(testCases, userSolution, currentProjectDirectory);
+                    int testCasesFailed = totalTestCases - testCasesPassed;
+                    long score = (long) (((problem.get().getScore()) / totalTestCases) * testCasesPassed);
+                    user.get().setScore(user.get().getScore() + score);
+                    Solutions solution = new Solutions(
+                            file.getBytes(),
+                            testCasesPassed,
+                            testCasesFailed,
+                            score,
+                            problem.get(),
+                            user.get()
+                    );
+                    solution.setId(solutionId);
+                    usersRepositories.save(user.get());
+                    solutionsRepositories.save(solution);
+
+                    return ResponseEntity.accepted().build();
+                } else{
+                    return ResponseEntity.notFound().build();
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
