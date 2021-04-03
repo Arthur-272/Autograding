@@ -18,4 +18,8 @@ public interface SolutionsRepositories extends CrudRepository <Solutions , Long>
     @Modifying
     @Query(value = "delete from Solutions where Solutions.problems_id=:problemId", nativeQuery = true)
     void deleteSolutionsByProblemId(Long problemId);
+
+
+    @Query(value = "select *from Solutions where Solutions.users_id=:userId and Solutions.problems_id=:problemId", nativeQuery = true)
+    List<Solutions> findAllSolutionsByUserIdAndProblemId(long userId, long problemId);
 }

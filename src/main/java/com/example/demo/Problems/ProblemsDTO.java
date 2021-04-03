@@ -89,4 +89,5 @@ public class ProblemsDTO {
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }
+
 }

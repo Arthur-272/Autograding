@@ -15,8 +15,11 @@ public class SolutionsController {
     private SolutionsServices solutionsServices;
 
     @RequestMapping(value = "user/{userId}/problems/{problemId}/addSolution")
-    public void addSolution(@RequestBody MultipartFile solution, @PathVariable long userId, @PathVariable long problemId) throws Exception {
-        solutionsServices.addSolution(userId, problemId, solution);
+    public void addSolution(@RequestBody MultipartFile solution,
+                            @RequestParam String language,
+                            @PathVariable long userId,
+                            @PathVariable long problemId) throws Exception {
+        solutionsServices.addSolution(userId, problemId, solution, language);
     }
 
     @RequestMapping(value="/solutions/view")

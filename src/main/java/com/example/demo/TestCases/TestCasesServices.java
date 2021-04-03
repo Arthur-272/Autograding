@@ -72,6 +72,7 @@ public class TestCasesServices {
                 if (list.contains(testCaseId) && testCase.isPresent()) {
                     testCases.remove(testCase.get());
                     problem.setTestCases(testCases);
+                    problem.setNumOfTestCases(problem.getNumOfTestCases() - 1);
                     problemsRepositories.save(problem);
                     testCasesRepository.deleteById(testCaseId);
                 } else {

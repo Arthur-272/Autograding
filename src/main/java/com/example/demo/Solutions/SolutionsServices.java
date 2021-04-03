@@ -5,6 +5,7 @@ import com.example.demo.Problems.ProblemsRepositories;
 import com.example.demo.TestCases.TestCases;
 import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepositories;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -80,12 +81,26 @@ public class SolutionsServices {
         solutionsRepositories.save(solution);
     }*/
 
-    public ResponseEntity addSolution(long userId, long problemId, MultipartFile file) throws Exception {
+    public ResponseEntity addSolution(long userId, long problemId, MultipartFile file, String language) throws Exception {
 
         Optional<Users> user = usersRepositories.findById(userId);
         if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
             if (problem.isPresent()) {
+
+                List<Solutions> solutions = solutionsRepositories.findAllSolutionsByUserIdAndProblemId(userId, problemId);
+                boolean userAlreadyPassedAllTestCases = false;
+                if(solutions != null){
+                    for(Solutions solution : solutions){
+                        if(solution.getTestCasesPassed() == problem.get().getNumOfTestCases()){
+                            userAlreadyPassedAllTestCases = true;
+                        }
+                    }
+                }
+
+                if(userAlreadyPassedAllTestCases){
+                    return ResponseEntity.accepted().build();
+                }
 
                 List<TestCases> testCases = problem.get().getTestCases();
                 if (testCases == null)
@@ -96,7 +111,13 @@ public class SolutionsServices {
                 File userSolution = new File(currentProjectDirectory + file.getOriginalFilename());
                 file.transferTo(userSolution);
                 int totalTestCases = problem.get().getNumOfTestCases();
-                int testCasesPassed = evaluate(testCases, userSolution, currentProjectDirectory);
+                int testCasesPassed = 0;
+
+                if(language.equals("python3"))
+                    testCasesPassed = evaluatePython3(testCases, userSolution, currentProjectDirectory);
+                else if(language.equals("java"))
+                    testCasesPassed = evaluateJava(testCases, userSolution, currentProjectDirectory);
+
                 int testCasesFailed = totalTestCases - testCasesPassed;
                 long score = (long) (((problem.get().getScore()) / totalTestCases) * testCasesPassed);
                 user.get().setScore(user.get().getScore() + score);
@@ -120,7 +141,7 @@ public class SolutionsServices {
         }
     }
 
-    public int evaluate(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
+    public int evaluateJava(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
         int count = 0;
         String cmd = "cmd /c javac " + file.getAbsolutePath();
         Process process = Runtime.getRuntime().exec(cmd);
@@ -173,6 +194,43 @@ public class SolutionsServices {
             dir += line;
         }
         return dir;
+    }
+
+    public int evaluatePython3(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception{
+        int count = 0;
+        String cmd = "";
+        Process process;
+        for(TestCases testCase : testCases){
+            String input = testCase.getInput();
+            String output = testCase.getOutput();
+            cmd = "cmd /c cd " + currentProjectDirectory;
+            cmd += " && python " + file.getName() + " " + input;
+            try{
+                process = Runtime.getRuntime().exec(cmd);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String userOutput = "";
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    userOutput += line;
+                }
+
+                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+                try {
+//                    System.out.println(userOutput + " " + output);
+                    assertEquals(userOutput, output);
+                    count++;
+                } catch (AssertionError ae) {
+                    System.out.println("Failed");
+                }
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        return count;
     }
 
     /*public int evaluate(String fileName) throws Exception{
@@ -246,7 +304,7 @@ public class SolutionsServices {
                     File userSolution = new File(currentProjectDirectory + file.getOriginalFilename());
                     file.transferTo(userSolution);
                     int totalTestCases = problem.get().getNumOfTestCases();
-                    int testCasesPassed = evaluate(testCases, userSolution, currentProjectDirectory);
+                    int testCasesPassed = evaluateJava(testCases, userSolution, currentProjectDirectory);
                     int testCasesFailed = totalTestCases - testCasesPassed;
                     long score = (long) (((problem.get().getScore()) / totalTestCases) * testCasesPassed);
                     user.get().setScore(user.get().getScore() + score);
