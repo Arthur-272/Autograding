@@ -112,11 +112,23 @@ public class SolutionsServices {
                 file.transferTo(userSolution);
                 int totalTestCases = problem.get().getNumOfTestCases();
                 int testCasesPassed = 0;
-
-                if (language.equals("python3"))
-                    testCasesPassed = evaluatePython3(testCases, userSolution, currentProjectDirectory);
-                else if (language.equals("java"))
-                    testCasesPassed = evaluateJava(testCases, userSolution, currentProjectDirectory);
+                switch (language) {
+                    case "python3":
+                        testCasesPassed = evaluatePython(testCases, userSolution, currentProjectDirectory, 3);
+                        break;
+                    case "python2":
+                        testCasesPassed = evaluatePython(testCases, userSolution, currentProjectDirectory, 2);
+                        break;
+                    case "java":
+                        testCasesPassed = evaluateJava(testCases, userSolution, currentProjectDirectory);
+                        break;
+                    case "C":
+                        testCasesPassed = evaluateC(testCases, userSolution, currentProjectDirectory);
+                        break;
+                    case "CPP":
+                        testCasesPassed = evaluateCPP(testCases, userSolution, currentProjectDirectory);
+                        break;
+                }
 
                 /**
                  * Subtracting the score that the user scored in his previous solution and if it's user's
@@ -153,6 +165,93 @@ public class SolutionsServices {
         }
     }
 
+    public int compileAndRun(String cmd, String output) throws Exception{
+        Process process;
+        int count = 0;
+        try {
+            process = Runtime.getRuntime().exec(cmd);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String userOutput = "";
+            String line;
+            while ((line = reader.readLine()) != null) {
+                userOutput += line;
+            }
+
+            reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            try {
+//                    System.out.println(userOutput + " " + output);
+                assertEquals(userOutput, output);
+                count++;
+            } catch (AssertionError ae) {
+                System.out.println("Failed");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    private int evaluateC(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception{
+        int count = 0;
+        String cmd = "cmd /c cd " + currentProjectDirectory + " && gcc " + file.getName();
+        Process process = Runtime.getRuntime().exec(cmd);
+        process.waitFor();
+        for (TestCases testCase : testCases) {
+            String input = testCase.getInput();
+            String output = testCase.getOutput();
+
+            cmd = "cmd /c cd " + currentProjectDirectory;
+            if(System.getProperty("os.name").toLowerCase().contains("windows"))
+                cmd += " && a.exe " + input;
+            else if(System.getProperty("os.name").toLowerCase().contains("linux"))
+                cmd += " && ./a.out " + input;
+            count += compileAndRun(cmd, output);
+        }
+
+        file.delete();
+        if(System.getProperty("os.name").toLowerCase().contains("windows"))
+            file = new File(currentProjectDirectory + "a.exe");
+        else if(System.getProperty("os.name").toLowerCase().contains("linux"))
+            file = new File(currentProjectDirectory + "a.out");
+        file.delete();
+
+        return count;
+    }
+
+    private int evaluateCPP(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception{
+        System.out.println("In C++");
+        int count = 0;
+        String cmd = "cmd /c cd " + currentProjectDirectory + " && g++ -std=c++11 " + file.getName();
+        System.out.println(cmd);
+        Process process = Runtime.getRuntime().exec(cmd);
+        process.waitFor();
+        for (TestCases testCase : testCases) {
+            String input = testCase.getInput();
+            String output = testCase.getOutput();
+
+            cmd = "cmd /c cd " + currentProjectDirectory;
+            if(System.getProperty("os.name").toLowerCase().contains("windows"))
+                cmd += " && a.exe " + input;
+            else if(System.getProperty("os.name").toLowerCase().contains("linux"))
+                cmd += " && ./a.out " + input;
+            System.out.println(cmd);
+            count += compileAndRun(cmd, output);
+        }
+
+        file.delete();
+        if(System.getProperty("os.name").toLowerCase().contains("windows"))
+            file = new File(currentProjectDirectory + "a.exe");
+        else if(System.getProperty("os.name").toLowerCase().contains("linux"))
+            file = new File(currentProjectDirectory + "a.out");
+        file.delete();
+
+        return count;
+    }
+
     public int evaluateJava(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
         int count = 0;
         String cmd = "cmd /c javac " + file.getAbsolutePath();
@@ -164,30 +263,7 @@ public class SolutionsServices {
 
             cmd = "cmd /c cd " + currentProjectDirectory;
             cmd += " && java " + file.getName().split("\\.")[0] + " " + input;
-            try {
-                process = Runtime.getRuntime().exec(cmd);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String userOutput = "";
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    userOutput += line;
-                }
-
-                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-                try {
-//                    System.out.println(userOutput + " " + output);
-                    assertEquals(userOutput, output);
-                    count++;
-                } catch (AssertionError ae) {
-                    System.out.println("Failed");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            count += compileAndRun(cmd, output);
         }
 
         file.delete();
@@ -196,89 +272,26 @@ public class SolutionsServices {
         return count;
     }
 
-    public String getCurrentProjectDirectory() throws Exception {
-        String cmd = "cmd /c cd";
-        Process process = Runtime.getRuntime().exec("cmd /c cd");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        String dir = "";
-        while ((line = reader.readLine()) != null) {
-            dir += line;
-        }
-        return dir;
-    }
-
-    public int evaluatePython3(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
+    public int evaluatePython(List<TestCases> testCases, File file, String currentProjectDirectory, int pythonVersion) throws Exception {
         int count = 0;
         String cmd = "";
-        Process process;
         for (TestCases testCase : testCases) {
             String input = testCase.getInput();
             String output = testCase.getOutput();
             cmd = "cmd /c cd " + currentProjectDirectory;
-            cmd += " && python " + file.getName() + " " + input;
-            try {
-                process = Runtime.getRuntime().exec(cmd);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String userOutput = "";
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    userOutput += line;
-                }
-
-                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-                try {
-//                    System.out.println(userOutput + " " + output);
-                    assertEquals(userOutput, output);
-                    count++;
-                } catch (AssertionError ae) {
-                    System.out.println("Failed");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if(pythonVersion == 2)
+                cmd += " && python2 " + file.getName() + " " + input;
+            else if(pythonVersion == 3)
+                cmd += " && python " + file.getName() + " " + input;
+            count += compileAndRun(cmd, output);
         }
         file.delete();
         return count;
     }
 
-    /*public int evaluate(String fileName) throws Exception{
-        int count = 0;
-        String path = getCurrentProjectDirectory() + "\\src\\main\\resources\\Submissions\\";
-        StringBuilder cmd = new StringBuilder();
-        cmd.append("cmd /c ");
-        cmd.append("javac " + path + "TestRunner.java ");
-        cmd.append(path + "test"+fileName+ " ");
-        cmd.append(path + fileName);
-
-        String file = fileName.split("\\.")[0];
-        cmd.append(" && cd " + path + " && java TestRunner test" + file);
-//        System.out.println(cmd.toString());
-        Process process = Runtime.getRuntime().exec(cmd.toString());
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-        count = Integer.parseInt(reader.readLine());
-
-        String line;
-        *//*while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-            if(line.contains("true"))
-                count++;
-        }*//*
-
-        reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-
-        reader.close();
-        return count;
-    }*/
+    public String getCurrentProjectDirectory() throws Exception {
+        return System.getProperty("user.dir");
+    }
 
     public List<Solutions> getAllSolutions() {
         List<Solutions> list = new ArrayList<Solutions>();
@@ -297,7 +310,6 @@ public class SolutionsServices {
     public void deleteSolutionsByProblemId(Long problemId) {
         solutionsRepositories.deleteSolutionsByProblemId(problemId);
     }
-
 
     /**
      * We might not need this, instead we can use the addSolution itself.
