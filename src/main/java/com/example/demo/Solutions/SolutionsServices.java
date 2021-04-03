@@ -5,7 +5,6 @@ import com.example.demo.Problems.ProblemsRepositories;
 import com.example.demo.TestCases.TestCases;
 import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepositories;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -89,18 +88,19 @@ public class SolutionsServices {
             if (problem.isPresent()) {
 
                 List<Solutions> solutions = solutionsRepositories.findAllSolutionsByUserIdAndProblemId(userId, problemId);
-                boolean userAlreadyPassedAllTestCases = false;
-                if(solutions != null){
-                    for(Solutions solution : solutions){
-                        if(solution.getTestCasesPassed() == problem.get().getNumOfTestCases()){
-                            userAlreadyPassedAllTestCases = true;
-                        }
+                int maxTestCasesPassed = 0;
+
+                if (solutions != null) {
+                    for (Solutions solution : solutions) {
+                        if (solution.getTestCasesPassed() > maxTestCasesPassed)
+                            maxTestCasesPassed = solution.getTestCasesPassed();
                     }
                 }
 
-                if(userAlreadyPassedAllTestCases){
-                    return ResponseEntity.accepted().build();
+                if (maxTestCasesPassed == problem.get().getNumOfTestCases()) {
+                    return ResponseEntity.badRequest().build();
                 }
+
 
                 List<TestCases> testCases = problem.get().getTestCases();
                 if (testCases == null)
@@ -113,19 +113,31 @@ public class SolutionsServices {
                 int totalTestCases = problem.get().getNumOfTestCases();
                 int testCasesPassed = 0;
 
-                if(language.equals("python3"))
+                if (language.equals("python3"))
                     testCasesPassed = evaluatePython3(testCases, userSolution, currentProjectDirectory);
-                else if(language.equals("java"))
+                else if (language.equals("java"))
                     testCasesPassed = evaluateJava(testCases, userSolution, currentProjectDirectory);
 
+                /**
+                 * Subtracting the score that the user scored in his previous solution and if it's user's
+                 * first solution then it subtract 0, affecting nothing.
+                 * */
                 int testCasesFailed = totalTestCases - testCasesPassed;
-                long score = (long) (((problem.get().getScore()) / totalTestCases) * testCasesPassed);
-                user.get().setScore(user.get().getScore() + score);
+                long scorePerTestCase = (long) ((problem.get().getScore()) / totalTestCases);
+                long usersPreviousScore = maxTestCasesPassed * scorePerTestCase;
+                long usersCurrentScore = testCasesPassed * scorePerTestCase;
+                long score = 0;
+                if (usersCurrentScore > usersPreviousScore)
+                    score = usersCurrentScore;
+                else
+                    score = usersPreviousScore;
+
+                user.get().setScore(user.get().getScore() + (score - usersPreviousScore));
                 Solutions solution = new Solutions(
                         file.getBytes(),
                         testCasesPassed,
                         testCasesFailed,
-                        score,
+                        usersCurrentScore,
                         problem.get(),
                         user.get()
                 );
@@ -196,16 +208,16 @@ public class SolutionsServices {
         return dir;
     }
 
-    public int evaluatePython3(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception{
+    public int evaluatePython3(List<TestCases> testCases, File file, String currentProjectDirectory) throws Exception {
         int count = 0;
         String cmd = "";
         Process process;
-        for(TestCases testCase : testCases){
+        for (TestCases testCase : testCases) {
             String input = testCase.getInput();
             String output = testCase.getOutput();
             cmd = "cmd /c cd " + currentProjectDirectory;
             cmd += " && python " + file.getName() + " " + input;
-            try{
+            try {
                 process = Runtime.getRuntime().exec(cmd);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String userOutput = "";
@@ -226,10 +238,11 @@ public class SolutionsServices {
                 } catch (AssertionError ae) {
                     System.out.println("Failed");
                 }
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        file.delete();
         return count;
     }
 
@@ -285,13 +298,17 @@ public class SolutionsServices {
         solutionsRepositories.deleteSolutionsByProblemId(problemId);
     }
 
+
+    /**
+     * We might not need this, instead we can use the addSolution itself.
+     */
     public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
         Optional<Users> user = usersRepositories.findById(userId);
         if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
             if (problem.isPresent()) {
                 Optional<Solutions> previousSolution = solutionsRepositories.findById(solutionId);
-                if(previousSolution.isPresent()){
+                if (previousSolution.isPresent()) {
                     long previousScore = previousSolution.get().getScore();
                     user.get().setScore((user.get().getScore() - previousScore));
 
@@ -321,7 +338,7 @@ public class SolutionsServices {
                     solutionsRepositories.save(solution);
 
                     return ResponseEntity.accepted().build();
-                } else{
+                } else {
                     return ResponseEntity.notFound().build();
                 }
             } else {
