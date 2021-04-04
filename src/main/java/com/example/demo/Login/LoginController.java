@@ -1,8 +1,15 @@
 package com.example.demo.Login;
 
+import com.example.demo.Users.Users;
+import com.example.demo.Users.UsersRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Optional;
 
 @RestController
 public class LoginController {
@@ -10,13 +17,7 @@ public class LoginController {
     private LoginServices loginServices;
 
     @RequestMapping(method = RequestMethod.POST, value="/login")
-    public ResponseEntity.BodyBuilder getUserById(@RequestBody Login user){
-        if(loginServices.checkUser(user)){
-            System.out.println("Success");
-            return ResponseEntity.status(200);
-        }else{
-            System.out.println("Fail");
-            return ResponseEntity.status(404);
-        }
+    public void login(@RequestBody Login credentials) throws Exception{
+        loginServices.login(credentials);
     }
 }

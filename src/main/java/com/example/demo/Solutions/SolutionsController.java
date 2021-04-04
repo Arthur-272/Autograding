@@ -1,11 +1,11 @@
 package com.example.demo.Solutions;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,8 +15,11 @@ public class SolutionsController {
     private SolutionsServices solutionsServices;
 
     @RequestMapping(value = "user/{userId}/problems/{problemId}/addSolution")
-    public void addSolution(@RequestBody Solutions solution, @PathVariable long userId, @PathVariable long problemId){
-        solutionsServices.addSolution(userId, problemId, solution);
+    public void addSolution(@RequestBody MultipartFile solution,
+                            @RequestParam String language,
+                            @PathVariable long userId,
+                            @PathVariable long problemId) throws Exception {
+        solutionsServices.addSolution(userId, problemId, solution, language);
     }
 
     @RequestMapping(value="/solutions/view")
@@ -32,5 +35,18 @@ public class SolutionsController {
     @RequestMapping(value = "/user/{userId}/Solutions")
     public List<Solutions> getSolutionsByUserId(@PathVariable Long userId){
         return solutionsServices.getSolutionsByUserId(userId);
+    }
+
+    @PutMapping("/user/{userId}/problems/{problemId}/solution")
+    public ResponseEntity updateSolution(@PathVariable Long userId,
+                                         @PathVariable Long problemId,
+                                         @RequestParam Long solutionId,
+                                         @RequestBody MultipartFile solution){
+        try {
+            return solutionsServices.updateSolution(userId, problemId, solutionId, solution);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
