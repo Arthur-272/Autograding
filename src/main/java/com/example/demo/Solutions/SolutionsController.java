@@ -37,7 +37,7 @@ public class SolutionsController {
         return solutionsServices.getSolutionsByUserId(userId);
     }
 
-    @PutMapping("/user/{userId}/problems/{problemId}/solution")
+    /*@PutMapping("/user/{userId}/problems/{problemId}/solution")
     public ResponseEntity updateSolution(@PathVariable Long userId,
                                          @PathVariable Long problemId,
                                          @RequestParam Long solutionId,
@@ -48,5 +48,5 @@ public class SolutionsController {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-    }
+    }*/
 }

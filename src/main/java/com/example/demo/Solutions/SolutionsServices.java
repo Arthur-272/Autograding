@@ -80,6 +80,7 @@ public class SolutionsServices {
                     case "CPP":
                         testCasesPassed = evaluateCPP(testCases, userSolution, currentProjectDirectory);
                         break;
+
                 }
 
                 /**
@@ -102,6 +103,7 @@ public class SolutionsServices {
                         testCasesPassed,
                         testCasesFailed,
                         usersCurrentScore,
+                        language,
                         problem.get(),
                         user.get()
                 );
@@ -266,7 +268,7 @@ public class SolutionsServices {
     /**
      * We might not need this, instead we can use the addSolution itself.
      */
-    public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
+    /*public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
         Optional<Users> user = usersRepositories.findById(userId);
         if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
@@ -311,5 +313,5 @@ public class SolutionsServices {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }
