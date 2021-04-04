@@ -32,54 +32,6 @@ public class SolutionsServices {
     @Autowired
     private UsersRepositories usersRepositories;
 
-    /*public void addSolution(long userId, long problemId, MultipartFile file) throws Exception {
-        Problems problem = problemsRepositories.findById(problemId).get();
-        Users user = usersRepositories.findById(userId).get();
-
-
-        byte[] data = problem.getTestCasesFile();
-        String currentProjectDirectory = getCurrentProjectDirectory();
-        currentProjectDirectory += "\\src\\main\\resources\\Submissions\\";
-        File problemFile = new File(currentProjectDirectory + "test" + file.getOriginalFilename());
-//        System.out.println(problemFile.getAbsoluteFile());
-        if(!problemFile.exists())
-            problemFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(problemFile);
-        fos.write(data);
-        fos.close();
-
-        File userSolution = new File(currentProjectDirectory + file.getOriginalFilename());
-        file.transferTo(userSolution);
-
-        int testCasesFailed = evaluate(file.getOriginalFilename());
-        int testCasesPassed = problem.getNumOfTestCases() - testCasesFailed;
-        long score = testCasesPassed * 2;
-        user.setScore(user.getScore() + score);
-        Solutions solution = new Solutions(
-                file.getBytes(),
-                testCasesPassed,
-                score,
-                problem,
-                user
-
-        );
-
-        File toBeDeleted = new File(currentProjectDirectory + "test" + file.getOriginalFilename());
-        toBeDeleted.delete();
-        toBeDeleted = new File(currentProjectDirectory + file.getOriginalFilename());
-        toBeDeleted.delete();
-        toBeDeleted = new File(currentProjectDirectory + "test" + file.getOriginalFilename().split("\\.")[0] + ".class");
-        toBeDeleted.delete();
-        toBeDeleted = new File(currentProjectDirectory + file.getOriginalFilename().split("\\.")[0] + ".class");
-        toBeDeleted.delete();
-
-//        Updating the score based on test cases passed
-        usersRepositories.save(user);
-
-//        Adding the solution to the database
-        solutionsRepositories.save(solution);
-    }*/
-
     public ResponseEntity addSolution(long userId, long problemId, MultipartFile file, String language) throws Exception {
 
         Optional<Users> user = usersRepositories.findById(userId);
@@ -128,6 +80,7 @@ public class SolutionsServices {
                     case "CPP":
                         testCasesPassed = evaluateCPP(testCases, userSolution, currentProjectDirectory);
                         break;
+
                 }
 
                 /**
@@ -150,6 +103,7 @@ public class SolutionsServices {
                         testCasesPassed,
                         testCasesFailed,
                         usersCurrentScore,
+                        language,
                         problem.get(),
                         user.get()
                 );
@@ -314,7 +268,7 @@ public class SolutionsServices {
     /**
      * We might not need this, instead we can use the addSolution itself.
      */
-    public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
+    /*public ResponseEntity updateSolution(Long userId, Long problemId, Long solutionId, MultipartFile file) throws Exception {
         Optional<Users> user = usersRepositories.findById(userId);
         if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
@@ -359,5 +313,5 @@ public class SolutionsServices {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }

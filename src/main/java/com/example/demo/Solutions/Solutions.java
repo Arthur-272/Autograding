@@ -19,6 +19,7 @@ public class Solutions {
     private int testCasesPassed;
     private int testCasesFailed;
     private long score;
+    private String languageUsed;
 
     @ManyToOne
     @JsonIgnore
@@ -29,11 +30,12 @@ public class Solutions {
     private byte[] solution;
 
 
-    public Solutions(byte[] solution, int testCasesPassed, int testCasesFailed,long score, Problems problems, Users users) throws IOException {
+    public Solutions(byte[] solution, int testCasesPassed, int testCasesFailed,long score, String languageUsed, Problems problems, Users users) throws IOException {
         this.solution = solution;
         this.testCasesPassed = testCasesPassed;
         this.testCasesFailed = testCasesFailed;
         this.score = score;
+        this.languageUsed = languageUsed;
         this.problems = problems;
         this.users = users;
     }

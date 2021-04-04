@@ -51,12 +51,16 @@ public class UsersServices {
         return usersRepositories.findById(id).get();
     }
 
+    public Optional<Users> getUserByEmail(String email){
+        return usersRepositories.findByEmail(email);
+    }
+
     public void save(Users user){
         usersRepositories.save(user);
     }
 
     public void addUser(Users user) throws Exception{
-        Optional<Users> list = usersRepositories.findById(user.getId());
+        Optional<Users> list = usersRepositories.findByEmail(user.getEmail());
         if(list.isEmpty()){
             user.setRegisteredDate(new Date());
             usersRepositories.save(user);
@@ -69,5 +73,9 @@ public class UsersServices {
         List<Users> list = new ArrayList<Users>();
         usersRepositories.findAll().forEach(list::add);
         return list;
+    }
+
+    Optional<List<Users>> getUsersByHighestScore(){
+        return usersRepositories.findAllByOrderByScoreDesc();
     }
 }

@@ -16,6 +16,7 @@ public class Users {
     private long id;
     private String firstName;
     private String lastName;
+    private String email;
     @JsonIgnore
     private String password;
     @JsonIgnore
@@ -30,10 +31,11 @@ public class Users {
 
     }
 
-    public Users(long id, String firstName, String lastName, String password, String mobile, long score, String role, Date registeredDate, Date lastLoggedInDate) {
+    public Users(long id, String firstName, String lastName, String email,String password, String mobile, long score, String role, Date registeredDate, Date lastLoggedInDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.password = password;
         this.mobile = mobile;
         this.score = score;
@@ -112,5 +114,13 @@ public class Users {
 
     public void setLastLoggedInDate(Date lastLoggedInDate) {
         this.lastLoggedInDate = lastLoggedInDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
