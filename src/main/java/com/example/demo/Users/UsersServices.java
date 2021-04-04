@@ -56,7 +56,7 @@ public class UsersServices {
     }
 
     public void addUser(Users user) throws Exception{
-        Optional<Users> list = usersRepositories.findById(user.getId());
+        Optional<Users> list = usersRepositories.findByEmail(user.getEmail());
         if(list.isEmpty()){
             user.setRegisteredDate(new Date());
             usersRepositories.save(user);
