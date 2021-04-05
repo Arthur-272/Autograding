@@ -17,13 +17,10 @@ public class Users {
     private String firstName;
     private String lastName;
     private String email;
-    @JsonIgnore
     private String password;
-    @JsonIgnore
     private String mobile;
     private long score;
     private String role;
-    @JsonIgnore
     private Date registeredDate;
     private Date lastLoggedInDate;
 

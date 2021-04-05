@@ -12,12 +12,14 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 public class LoginController {
     @Autowired
     private LoginServices loginServices;
 
     @RequestMapping(method = RequestMethod.POST, value="/login")
-    public void login(@RequestBody Login credentials) throws Exception{
-        loginServices.login(credentials);
+    public Long login(@RequestBody Login credentials) throws Exception{
+        return loginServices.login(credentials);
+
     }
 }

@@ -1,7 +1,10 @@
 package com.example.demo.Users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.Option;
 import java.util.ArrayList;
@@ -59,13 +62,14 @@ public class UsersServices {
         usersRepositories.save(user);
     }
 
-    public void addUser(Users user) throws Exception{
+    public ResponseEntity addUser(Users user) throws Exception {
         Optional<Users> list = usersRepositories.findByEmail(user.getEmail());
         if(list.isEmpty()){
             user.setRegisteredDate(new Date());
             usersRepositories.save(user);
+            return ResponseEntity.ok().build();
         } else{
-            throw new Exception("User already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "user already exists");
         }
     }
 
