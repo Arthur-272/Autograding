@@ -9,6 +9,7 @@ import com.example.demo.Users.UsersServices;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,7 +37,6 @@ public class ClassesServices {
     public List<Classes> getAllClasses() {
         List<Classes> list = new ArrayList<Classes>();
         classesRepositories.findAll().forEach(list::add);
-        System.out.println(list);
         return list;
     }
 
@@ -52,7 +52,7 @@ public class ClassesServices {
         return classesRepositories.getAllByOwnerId(id);
     }
 
-    public void addNewClass(Classes newClass, long ownerId) throws Exception{
+    public ResponseEntity addNewClass(Classes newClass, long ownerId) throws Exception{
         if (usersServices.isTeacher(ownerId)) {
 //            Making the current logged in user the owner of the class
             Users user = usersRepositories.findById(ownerId).get();
@@ -71,11 +71,34 @@ public class ClassesServices {
             List<Posts> posts = new ArrayList<com.example.demo.Posts.Posts>();
             newClass.setPosts(posts);
 
+//            Creating a random classCode
+            String classCode = generateClassCode();
+            Optional<Classes> classWithClassCodes;
+            while(true){
+                classWithClassCodes = classesRepositories.findByClassCode(classCode);
+                if(classWithClassCodes.isPresent())
+                    classCode = generateClassCode();
+                else
+                    break;
+            }
+            newClass.setClassCode(classCode);
+
 //            Adding the class to the db
             classesRepositories.save(newClass);
+            return ResponseEntity.accepted().body(classCode);
         } else {
             throw new Exception("Not a teacher");
         }
+    }
+
+    public String generateClassCode(){
+        String pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder string = new StringBuilder();
+        Random random = new Random();
+        for(int i=0; i<6 ; i++){
+            string.append(pool.charAt(random.nextInt(pool.length())));
+        }
+        return string.toString();
     }
 
     public void addTeachers(long userId, long classId, JSONArray teacherIds) throws Exception{
@@ -208,4 +231,40 @@ public class ClassesServices {
         return classesRepositories.findById(classId).get().getStudents();
     }
 
+    public ResponseEntity joinClassUsingClassCode(long userId, String classCode) {
+        Optional<Users> user = usersRepositories.findById(userId);
+        if(user.isPresent()){
+            String role = user.get().getRole();
+            Optional<Classes> classToBeJoined = classesRepositories.findByClassCode(classCode);
+            if(classToBeJoined.isPresent()){
+                long classId = classToBeJoined.get().getId();
+                if(role.equals("teacher")){
+                    List<Users> inClass = classesRepositories.findById(classId).get().getTeachers();
+                    if(!inClass.contains(usersServices.getUserById(userId))){
+                        inClass.add(usersServices.getUserById(userId));
+                        return ResponseEntity.accepted().build();
+                    } else{
+                        return ResponseEntity.status(500).build();
+                    }
+                } else if(role.equals("student")){
+                    List<Users> inClass = classesRepositories.findById(classId).get().getStudents();
+                    if(!inClass.contains(usersServices.getUserById(userId))){
+                        inClass.add(usersServices.getUserById(userId));
+                        return ResponseEntity.accepted().build();
+                    } else{
+                        return ResponseEntity.badRequest().build();
+                    }
+                } else{
+                    System.out.println("Role error");
+                    return ResponseEntity.badRequest().build();
+                }
+            } else{
+                System.out.println("No class found");
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            System.out.println("No user found");
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
