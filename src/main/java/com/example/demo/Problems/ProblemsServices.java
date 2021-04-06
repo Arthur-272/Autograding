@@ -38,7 +38,7 @@ public class ProblemsServices {
     @Autowired
     private TestCasesRepository testCasesRepository;
 
-    public void addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
+    public Long addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
 
         if(usersServices.checkIfUserExists(userId)) {
 
@@ -55,6 +55,7 @@ public class ProblemsServices {
             problem.setAuthor(usersServices.getUserById(userId));
 
             problemsRepositories.save(problem);
+            return problem.getId();
         }else{
             throw new Exception("User does not exists...");
         }
