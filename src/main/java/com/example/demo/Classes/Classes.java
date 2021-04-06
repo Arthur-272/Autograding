@@ -17,6 +17,7 @@ public class Classes {
     private String description;
     private long ownerId;
     private Date createdAt;
+    private String classCode;
 
     @ManyToMany
     private List<Users> students;
@@ -103,5 +104,13 @@ public class Classes {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
     }
 }

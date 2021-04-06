@@ -2,6 +2,7 @@ package com.example.demo.Classes;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class ClassesController {
     }
 
     @PostMapping(value =  "/user/{id}/createClass")
-    public void createNewClass(@RequestBody Classes newClass, @PathVariable long id)throws Exception{
-        classesServices.addNewClass(newClass, id);
+    public ResponseEntity createNewClass(@RequestBody Classes newClass, @PathVariable long id)throws Exception{
+        return classesServices.addNewClass(newClass, id);
     }
 
     @GetMapping("/user/{id}/classes")
@@ -50,5 +51,10 @@ public class ClassesController {
     @DeleteMapping("/user/{userId}/class/{id}/deleteClass")
     public void deleteClass(@PathVariable long userId, @PathVariable long id) throws Exception{
         classesServices.deleteClass(userId, id);
+    }
+
+    @PostMapping("/user/{userId}/classes/joinClass")
+    public ResponseEntity joinClassUsingClassCode(@PathVariable long userId, @RequestParam String classCode){
+        return classesServices.joinClassUsingClassCode(userId, classCode);
     }
 }
