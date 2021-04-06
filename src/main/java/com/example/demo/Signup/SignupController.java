@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SignupController {
@@ -28,4 +29,8 @@ public class SignupController {
         return usersServices.getUserById(userId);
     }
 
+    @GetMapping("/user/{emailId}")
+    public Optional<Users> getUserDetails(@PathVariable String emailId){
+        return usersServices.getUserByEmail(emailId);
+    }
 }
