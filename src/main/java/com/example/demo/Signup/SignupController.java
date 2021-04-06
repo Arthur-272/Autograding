@@ -28,9 +28,4 @@ public class SignupController {
     public Users getUserDetails(@PathVariable long userId){
         return usersServices.getUserById(userId);
     }
-
-    @GetMapping("/user/{emailId}")
-    public Optional<Users> getUserDetails(@PathVariable String emailId){
-        return usersServices.getUserByEmail(emailId);
-    }
 }
