@@ -7,15 +7,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class ProblemsController {
 
     @Autowired
     private ProblemsServices problemsServices;
 
     @PostMapping("/user/{userId}/addProblems")
-    public void addProblems(@PathVariable long userId,
+    public Long addProblems(@PathVariable long userId,
                             @ModelAttribute ProblemsDTO problem) throws Exception{
-        problemsServices.addProblem(userId, problem);
+        return problemsServices.addProblem(userId, problem);
     }
 
     @GetMapping("/problems/id/{id}")

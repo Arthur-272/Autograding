@@ -7,11 +7,12 @@ import javax.persistence.Id;
 public class Login {
 
     @Id
-    private long id;
+    private Long id;
+    private String email ;
     private String password;
 
-    public long getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
 
     public Login() {

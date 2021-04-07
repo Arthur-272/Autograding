@@ -2,15 +2,15 @@ package com.example.demo.Signup;
 
 import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersServices;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class SignupController {
 
     @Autowired
@@ -22,8 +22,8 @@ public class SignupController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
-    public void add(@RequestBody Users user) throws Exception{
-        usersServices.addUser(user);
+    public ResponseEntity add(@RequestBody Users user) throws Exception{
+        return usersServices.addUser(user);
     }
 
 }

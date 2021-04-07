@@ -17,6 +17,7 @@ public class Problems {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
+    @Lob
     private String statement;
     private String title;
     @Lob

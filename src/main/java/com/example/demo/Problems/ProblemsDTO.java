@@ -8,17 +8,17 @@ public class ProblemsDTO {
     private MultipartFile solution;
     private double score;
     private int numOfTestCases;
-    private MultipartFile testCasesFile;
+
     private String category;
     private String difficulty;
 
-    public ProblemsDTO(String statement, String title, MultipartFile solution, double score, int numOfTestCases, MultipartFile testCasesFile, String category, String difficulty) {
+    public ProblemsDTO(String statement, String title, MultipartFile solution, double score, int numOfTestCases,  String category, String difficulty) {
         this.statement = statement;
         this.title = title;
         this.solution = solution;
         this.score = score;
         this.numOfTestCases = numOfTestCases;
-        this.testCasesFile = testCasesFile;
+
         this.category = category;
         this.difficulty = difficulty;
     }
@@ -64,14 +64,6 @@ public class ProblemsDTO {
 
     public void setNumOfTestCases(int numOfTestCases) {
         this.numOfTestCases = numOfTestCases;
-    }
-
-    public MultipartFile getTestCasesFile() {
-        return testCasesFile;
-    }
-
-    public void setTestCasesFile(MultipartFile testCasesFile) {
-        this.testCasesFile = testCasesFile;
     }
 
     public String getCategory() {
