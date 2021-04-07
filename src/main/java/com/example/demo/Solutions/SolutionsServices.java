@@ -151,21 +151,19 @@ public class SolutionsServices {
 
     private int evaluateC(List<TestCases> testCases, File file) throws Exception{
         int count = 0;
-        String[] cmd = new String[0];
+        String[] cmd = new String[3];
 
-        if(OS.contains("windows"))
-            cmd = new String[]{
-                    "cmd",
-                    "/c",
-                    "cd " + SUBMISSIONS_FOLDER + " && gcc " + file.getName()
-            };
+        if(OS.contains("windows")) {
+            cmd[0] = "cmd";
+            cmd[1] = "/c";
+            cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && gcc " + file.getName();
+        }
 
-        else if(OS.contains("linux") | OS.contains("mac"))
-            cmd = new String[]{
-                    "/bin/bash",
-                    "-c",
-                    "cd " + SUBMISSIONS_FOLDER + " && gcc " + file.getName()
-            };
+        else if(OS.contains("linux") | OS.contains("mac")) {
+            cmd[0] = "/bin/bash";
+            cmd[1] = "-c";
+            cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && gcc " + file.getName();
+        }
 
         Process process = Runtime.getRuntime().exec(cmd);
         process.waitFor();
@@ -173,18 +171,16 @@ public class SolutionsServices {
             String input = testCase.getInput();
             String output = testCase.getOutput();
 
-            if(OS.contains("windows"))
-                cmd = new String[]{
-                        "cmd",
-                        "/c",
-                        "cd " + SUBMISSIONS_FOLDER + " && a.exe " + input
-                };
-            else if(OS.contains("linux") | OS.contains("mac"))
-                cmd = new String[]{
-                        "/bin/bash",
-                        "-c",
-                        "cd " + SUBMISSIONS_FOLDER + " && ./a.out " + input
-                };
+            if(OS.contains("windows")) {
+                cmd[0] = "cmd";
+                cmd[1] = "/c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && a.exe " + input;
+            }
+            else if(OS.contains("linux") | OS.contains("mac")) {
+                cmd[0] = "/bin/bash";
+                cmd[1] = "-c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && ./a.out " + input;
+            }
             count += compileAndRun(cmd, output);
         }
 
@@ -201,19 +197,17 @@ public class SolutionsServices {
     private int evaluateCPP(List<TestCases> testCases, File file) throws Exception{
         System.out.println("In C++");
         int count = 0;
-        String[] cmd = new String[0];
-        if(OS.contains("windows"))
-            cmd = new String[]{
-                    "cmd",
-                    "/c",
-                    "cd " + SUBMISSIONS_FOLDER + " && g++ -std=c++11 " + file.getName()
-            };
-        else if(OS.contains("linux") | OS.contains("mac"))
-            cmd = new String[]{
-                    "/bin/bash",
-                    "-c",
-                    "cd " + SUBMISSIONS_FOLDER + " && g++ -std=c++11 " + file.getName()
-            };
+        String[] cmd = new String[3];
+        if(OS.contains("windows")) {
+            cmd[0] = "cmd";
+            cmd[1] = "/c";
+            cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && g++ -std=c++11 " + file.getName();
+        }
+        else if(OS.contains("linux") | OS.contains("mac")) {
+            cmd[0] = "/bin/bash";
+            cmd[1] = "-c";
+            cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && g++ -std=c++11 " + file.getName();
+        }
         System.out.println(cmd);
         Process process = Runtime.getRuntime().exec(cmd);
         process.waitFor();
@@ -221,20 +215,16 @@ public class SolutionsServices {
             String input = testCase.getInput();
             String output = testCase.getOutput();
 
-            if(OS.contains("windows"))
-                cmd = new String[]{
-                        "cmd",
-                        "/c",
-                        "cd " + SUBMISSIONS_FOLDER + " && a.exe " + input
-                };
-
-            else if(OS.contains("linux") | OS.contains("mac"))
-                cmd = new String[]{
-                        "cmd",
-                        "/c",
-                        "cd " + SUBMISSIONS_FOLDER + " && ./a.out " + input
-                };
-
+            if(OS.contains("windows")) {
+                cmd[0] = "cmd";
+                cmd[1] = "/c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && a.exe " + input;
+            }
+            else if(OS.contains("linux") | OS.contains("mac")) {
+                cmd[0] = "cmd";
+                cmd[1] = "/c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && ./a.out " + input;
+            }
             System.out.println(cmd);
             count += compileAndRun(cmd, output);
         }
@@ -252,32 +242,36 @@ public class SolutionsServices {
     public int evaluateJava(List<TestCases> testCases, File file) throws Exception {
         int count = 0;
         if(OS.contains("windows")) {
-            String[] cmd = new String[] {"cmd" ,"/c" ,"javac " + file.getAbsolutePath()};
+            String[] cmd = new String[3];
+            cmd[0] = "cmd";
+            cmd[1] = "/c";
+            cmd[2] = "javac " + file.getAbsolutePath();
             Process process = new ProcessBuilder(cmd).start();
             process.waitFor();
             for (TestCases testCase : testCases) {
                 String input = testCase.getInput();
                 String output = testCase.getOutput();
 
-                cmd = new String[]{"cmd",
-                        "/c",
-                        "cd " + SUBMISSIONS_FOLDER + " && java " + file.getName().split("\\.")[0] + " " + input
-                };
+                cmd[0] = "cmd";
+                cmd[1] = "/c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && java " + file.getName().split("\\.")[0] + " " + input;
                 count += compileAndRun(cmd, output);
             }
         }
         else if(OS.contains("linux") | OS.contains("mac")){
-            String[] cmd = new String[] {"/bin/bash","-c","javac " + file.getAbsolutePath()};
+            String[] cmd = new String[3];
+            cmd[0] = "/bin/bash";
+            cmd[1] = "-c";
+            cmd[2] = "javac " + file.getAbsolutePath();
             Process process = new ProcessBuilder(cmd).start();
             process.waitFor();
             for(TestCases testCase : testCases) {
                 String input = testCase.getInput();
                 String output = testCase.getOutput();
 
-                cmd = new String[] {"/bin/bash",
-                        "-c",
-                        "cd " + SUBMISSIONS_FOLDER + " && java " + file.getName().split("\\.")[0] + " " + input
-                };
+                cmd[0] = "/bin/bash";
+                cmd[1] = "-c";
+                cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && java " + file.getName().split("\\.")[0] + " " + input;
                 count += compileAndRun(cmd, output);
             }
         }
@@ -290,34 +284,34 @@ public class SolutionsServices {
 
     public int evaluatePython(List<TestCases> testCases, File file, int pythonVersion) throws Exception {
         int count = 0;
-        String[] cmd;
+        String[] cmd = new String[3];
         for (TestCases testCase : testCases) {
             String input = testCase.getInput();
             String output = testCase.getOutput();
             if(OS.contains("windows")) {
-                if (pythonVersion == 2)
-                    cmd = new String[]{"cmd",
-                            "/c",
-                            "cd " + SUBMISSIONS_FOLDER + " && python2 " + file.getName() + " " + input
-                };
-                else
-                    cmd = new String[]{"cmd",
-                            "/c",
-                            "cd " + SUBMISSIONS_FOLDER + " && python " + file.getName() + " " + input
-                    };
+                if (pythonVersion == 2) {
+                    cmd[0] = "cmd";
+                    cmd[1] = "/c";
+                    cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && python2 " + file.getName() + " " + input;
+                }
+                else {
+                    cmd[0] = "cmd";
+                    cmd[1] = "/c";
+                    cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && python " + file.getName() + " " + input;
+                }
                 count += compileAndRun(cmd, output);
             }
             else if(OS.contains("linux") | OS.contains("mac")){
-                if (pythonVersion == 2)
-                    cmd = new String[]{"/bin/bash",
-                            "-c",
-                            "cd " + SUBMISSIONS_FOLDER + " && python2 " + file.getName() + " " + input
-                    };
-                else
-                    cmd = new String[]{"/bin/bash",
-                            "-c",
-                            "cd " + SUBMISSIONS_FOLDER + " && python " + file.getName() + " " + input
-                    };
+                if (pythonVersion == 2) {
+                    cmd[0] = "/bin/bash";
+                    cmd[1] = "-c";
+                    cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && python2 " + file.getName() + " " + input;
+                }
+                else {
+                    cmd[0] = "/bin/bash";
+                    cmd[1] = "-c";
+                    cmd[2] = "cd " + SUBMISSIONS_FOLDER + " && python " + file.getName() + " " + input;
+                }
                 count += compileAndRun(cmd, output);
             }
         }
