@@ -50,4 +50,9 @@ public class SolutionsController {
             return ResponseEntity.badRequest().build();
         }
     }*/
+
+    @GetMapping("/user/{userId}/problem/{problemId}/viewSolutions")
+    public List<Solutions> getSolutionsByUserIdAndProblemId(@PathVariable Long userId, @PathVariable Long problemId){
+        return solutionsServices.getSolutionsByUserIdAndProblemId(userId, problemId);
+    }
 }
