@@ -337,4 +337,8 @@ public class SolutionsServices {
         solutionsRepositories.deleteSolutionsByProblemId(problemId);
     }
 
+    public List<Solutions> getSolutionsByUserIdAndProblemId(Long userId, Long problemId){
+        return solutionsRepositories.findAllSolutionsByUserIdAndProblemId(userId, problemId);
+    }
+
 }
