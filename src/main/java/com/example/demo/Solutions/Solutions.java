@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.Date;
 
 @Entity
 public class Solutions {
@@ -20,6 +21,9 @@ public class Solutions {
     private int testCasesFailed;
     private long score;
     private String languageUsed;
+    private Date solutionSubmittedOn;
+
+
 
     @ManyToOne
     @JsonIgnore
@@ -98,4 +102,9 @@ public class Solutions {
     public void setTestCasesFailed(int testCasesFailed) {
         this.testCasesFailed = testCasesFailed;
     }
+
+    public void setSolutionSubmittedOn(Date solutionSubmittedOn) {
+        this.solutionSubmittedOn = solutionSubmittedOn;
+    }
+
 }

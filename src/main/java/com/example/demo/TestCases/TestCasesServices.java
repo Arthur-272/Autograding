@@ -128,4 +128,25 @@ public class TestCasesServices {
             throw new Exception("User not found");
         }
     }
+
+    public List<TestCases> getTestCases(Long problemId) throws Exception {
+
+
+            Problems problem = problemsServices.getProblemById(problemId);
+            List<TestCases> testCasesList=new ArrayList<>();
+            if (problem != null ) {
+                List<TestCases> testCases = problem.getTestCases();
+                if(testCases.size()==1)
+                    return testCases;
+                else{
+                    for(int i=0;i<2;i++){
+                        testCasesList.add(testCases.get(i));
+                    }
+                    return testCasesList;
+                }
+            } else {
+                throw new Exception("Error");
+            }
+
+    }
 }

@@ -56,4 +56,9 @@ public class TestCasesController {
                                         @PathVariable Long problemId) throws Exception{
         return testCasesServices.getTestCases(userId, problemId);
     }
+
+    @GetMapping("problem/{problemId}/testCases")
+    public List<TestCases> getTestCases(@PathVariable Long problemId) throws Exception{
+        return testCasesServices.getTestCases(problemId);
+    }
 }

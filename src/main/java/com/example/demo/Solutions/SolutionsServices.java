@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,6 +108,7 @@ public class SolutionsServices {
                         problem.get(),
                         user.get()
                 );
+                solution.setSolutionSubmittedOn(new Date());
                 usersRepositories.save(user.get());
                 solutionsRepositories.save(solution);
 
