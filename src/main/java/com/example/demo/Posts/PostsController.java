@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin
 public class PostsController {
@@ -50,7 +48,7 @@ public class PostsController {
     }
 
     @GetMapping("/user/{userId}/class/{classId}/posts")
-    List<Posts> findAllPostsByUserIdAndClassId(@PathVariable long userId, @PathVariable long classId){
+    ResponseEntity findAllPostsByUserIdAndClassId(@PathVariable long userId, @PathVariable long classId){
         return postsServices.findAllPostsByUserIdAndClassId(userId, classId);
     }
 }

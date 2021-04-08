@@ -1,7 +1,6 @@
 package com.example.demo.Posts;
 
 import com.example.demo.Classes.Classes;
-import com.example.demo.Classes.ClassesRepositories;
 import com.example.demo.Classes.ClassesServices;
 import com.example.demo.Comments.Comments;
 import com.example.demo.Comments.CommentsServices;
@@ -202,7 +201,17 @@ public class PostsServices {
         }
     }
 
-    public List<Posts> findAllPostsByUserIdAndClassId(long userId, long classId){
-        return postsRepositories.findAllPostsByUserIdAndClassId(userId, classId);
+    public ResponseEntity findAllPostsByUserIdAndClassId(long userId, long classId){
+        Users user = usersServices.getUserById(userId);
+        if(user != null){
+            Classes classes = classesServices.findById(classId);
+            if(classes != null & (classes.getTeachers().contains(user) | classes.getStudents().contains(user))){
+                return ResponseEntity.ok().body(postsRepositories.findAllPostsByUserIdAndClassId(userId, classId));
+            } else{
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
