@@ -36,7 +36,6 @@ public class ClassesServices {
     public List<Classes> getAllClasses() {
         List<Classes> list = new ArrayList<Classes>();
         classesRepositories.findAll().forEach(list::add);
-        System.out.println(list);
         return list;
     }
 

@@ -18,7 +18,7 @@ public class Solutions {
     private Users users;
     private int testCasesPassed;
     private int testCasesFailed;
-    private long score;
+    private double score;
     private String languageUsed;
 
     @ManyToOne
@@ -30,7 +30,7 @@ public class Solutions {
     private byte[] solution;
 
 
-    public Solutions(byte[] solution, int testCasesPassed, int testCasesFailed,long score, String languageUsed, Problems problems, Users users) throws IOException {
+    public Solutions(byte[] solution, int testCasesPassed, int testCasesFailed, double score, String languageUsed, Problems problems, Users users) throws IOException {
         this.solution = solution;
         this.testCasesPassed = testCasesPassed;
         this.testCasesFailed = testCasesFailed;
@@ -67,11 +67,11 @@ public class Solutions {
         this.testCasesPassed = testCasesPassed;
     }
 
-    public long getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(long score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

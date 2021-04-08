@@ -2,7 +2,9 @@ package com.example.demo.Posts;
 
 import com.example.demo.Classes.Classes;
 import com.example.demo.Comments.Comments;
+import com.example.demo.Problems.Problems;
 import com.example.demo.Users.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,6 +22,9 @@ public class Posts {
     @ManyToOne
     private Users owner;
 
+    @OneToMany
+    List<Problems> problems;
+
     @ManyToMany
     private List<Users> usersConcerning;
 
@@ -27,23 +32,26 @@ public class Posts {
     private List<Comments> comments;
 
     @ManyToOne
+    @JsonIgnore
     private Classes classes;
 
     public Posts() {
 
     }
 
-    public Posts(long id, String title, String description, Date dateAdded, Users owner, List<Users> usersConcerning, List<Comments> comments, Classes classes) {
+    public Posts(long id, String title, String description, Date dateAdded, Users owner, List<Problems> problems,List<Users> usersConcerning, List<Comments> comments, Classes classes) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dateAdded = dateAdded;
         this.owner = owner;
+        this.problems = problems;
         this.usersConcerning = usersConcerning;
         this.comments = comments;
         this.classes = classes;
     }
 
+    @JsonIgnore
     public long getId() {
         return id;
     }
@@ -106,5 +114,13 @@ public class Posts {
 
     public void setClasses(Classes classes) {
         this.classes = classes;
+    }
+
+    public List<Problems> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problems> problems) {
+        this.problems = problems;
     }
 }
