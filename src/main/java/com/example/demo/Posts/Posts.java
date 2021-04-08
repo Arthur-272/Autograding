@@ -76,6 +76,7 @@ public class Posts {
         this.description = description;
     }
 
+    @JsonIgnore
     public Date getDateAdded() {
         return dateAdded;
     }
@@ -84,6 +85,7 @@ public class Posts {
         this.dateAdded = dateAdded;
     }
 
+    @JsonIgnore
     public List<Users> getUsersConcerning() {
         return usersConcerning;
     }

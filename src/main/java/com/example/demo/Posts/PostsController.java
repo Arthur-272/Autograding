@@ -50,8 +50,7 @@ public class PostsController {
     }
 
     @GetMapping("/user/{userId}/class/{classId}/posts")
-    public ResponseEntity getPostsByClass(@PathVariable long userId,
-                                       @PathVariable long classId){
-        return postsServices.getPostsByClass(userId, classId);
+    List<Posts> findAllPostsByUserIdAndClassId(@PathVariable long userId, @PathVariable long classId){
+        return postsServices.findAllPostsByUserIdAndClassId(userId, classId);
     }
 }

@@ -202,18 +202,7 @@ public class PostsServices {
         }
     }
 
-    public ResponseEntity getPostsByClass(long userId, long classId) {
-        Users user = usersServices.getUserById(userId);
-        if(user != null){
-            Classes classes = classesServices.findById(classId);
-            if(classes != null && (classes.getStudents().contains(user) | classes.getTeachers().contains(user))){
-                List<Posts> posts = postsRepositories.findPostsByClassId(classId);
-                return ResponseEntity.ok().body(posts);
-            } else{
-                return ResponseEntity.badRequest().build();
-            }
-        } else{
-            return ResponseEntity.badRequest().build();
-        }
+    public List<Posts> findAllPostsByUserIdAndClassId(long userId, long classId){
+        return postsRepositories.findAllPostsByUserIdAndClassId(userId, classId);
     }
 }
