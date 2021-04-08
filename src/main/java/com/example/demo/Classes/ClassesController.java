@@ -23,9 +23,9 @@ public class ClassesController {
         classesServices.addNewClass(newClass, id);
     }
 
-    @GetMapping("/user/{id}/classes")
-    public List<Classes> showAllClassesById(@PathVariable long id){
-        return classesServices.getClassesByOwnerId(id);
+    @GetMapping("/user/{userId}/classes")
+    List<Classes> findAllClassByUserId(@PathVariable long userId) {
+        return classesServices.findAllClassByUserId(userId);
     }
 
     @PostMapping("/user/{userId}/class/{id}/addTeachers")

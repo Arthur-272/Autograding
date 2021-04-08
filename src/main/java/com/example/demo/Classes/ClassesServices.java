@@ -207,4 +207,8 @@ public class ClassesServices {
         return classesRepositories.findById(classId).get().getStudents();
     }
 
+    public List<Classes> findAllClassByUserId(long userId){
+        return classesRepositories.getAllClassesByUserId(userId);
+    }
+
 }
