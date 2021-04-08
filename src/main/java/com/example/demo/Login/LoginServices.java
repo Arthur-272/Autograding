@@ -23,7 +23,7 @@ public class LoginServices {
     @Autowired
     private UsersRepositories usersRepositories;
 
-    public Long login(Login credentials) throws Exception{
+    public ResponseEntity login(Login credentials) throws Exception{
 
         Optional<Users> u = usersRepositories.findByEmail(credentials.getEmail());
         Long id = null;
@@ -41,6 +41,6 @@ public class LoginServices {
         } else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
         }
-        return id;
+        return ResponseEntity.ok().body(u);
     }
 }
