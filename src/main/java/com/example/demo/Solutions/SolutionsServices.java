@@ -89,10 +89,10 @@ public class SolutionsServices {
                  * first solution then it subtract 0, affecting nothing.
                  * */
                 int testCasesFailed = totalTestCases - testCasesPassed;
-                long scorePerTestCase = (long) ((problem.get().getScore()) / totalTestCases);
-                long usersPreviousScore = maxTestCasesPassed * scorePerTestCase;
-                long usersCurrentScore = testCasesPassed * scorePerTestCase;
-                long score = 0;
+                double scorePerTestCase = ((problem.get().getScore()) / totalTestCases);
+                double usersPreviousScore = maxTestCasesPassed * scorePerTestCase;
+                double usersCurrentScore = testCasesPassed * scorePerTestCase;
+                double score = 0;
                 if (usersCurrentScore > usersPreviousScore)
                     score = usersCurrentScore;
                 else

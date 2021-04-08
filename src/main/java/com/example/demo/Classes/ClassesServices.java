@@ -231,6 +231,7 @@ public class ClassesServices {
         return classesRepositories.findById(classId).get().getStudents();
     }
 
+
     public ResponseEntity joinClassUsingClassCode(long userId, String classCode) {
         Optional<Users> user = usersRepositories.findById(userId);
         if(user.isPresent()){
@@ -267,4 +268,10 @@ public class ClassesServices {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    public List<Classes> findAllClassByUserId(long userId){
+        return classesRepositories.getAllClassesByUserId(userId);
+    }
+
+
 }

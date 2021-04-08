@@ -1,5 +1,7 @@
 package com.example.demo.Problems;
 
+import com.example.demo.Classes.Classes;
+import com.example.demo.Classes.ClassesServices;
 import com.example.demo.Solutions.SolutionsServices;
 import com.example.demo.TestCases.TestCases;
 import com.example.demo.TestCases.TestCasesRepository;
@@ -37,6 +39,9 @@ public class ProblemsServices {
 
     @Autowired
     private TestCasesRepository testCasesRepository;
+
+    @Autowired
+    private ClassesServices classesServices;
 
     public Long addProblem(long userId, ProblemsDTO problemDTO) throws Exception{
 
@@ -166,6 +171,21 @@ public class ProblemsServices {
             }
         } else{
             return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    public ResponseEntity findAllProblemsAssignedInPost(long userId, long classId, long postId) {
+        Users user = usersServices.getUserById(userId);
+        if(user != null){
+            Optional<Classes> classes = classesServices.getClassById(classId);
+            if(classes.isPresent() && (classes.get().getTeachers().contains(user) | classes.get().getStudents().contains(user))){
+                return ResponseEntity.ok().body(problemsRepositories.findAllProblemsAssignedInPost(postId));
+            } else{
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            return ResponseEntity.badRequest().build();
         }
     }
 }

@@ -23,5 +23,8 @@ public interface ProblemsRepositories extends CrudRepository <Problems, Long> {
     void deleteProblemByAuthorId(@Param("id") String authorId);
 
 
+    @Query(value = "select *from problems where problems.id in " +
+            "(select posts_problems.problems_id from posts_problems where posts_problems.posts_id=:postId)", nativeQuery = true)
+    List<Problems> findAllProblemsAssignedInPost(long postId);
 }
 // /user/98/classes

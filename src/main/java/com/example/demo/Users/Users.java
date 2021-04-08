@@ -1,8 +1,6 @@
 package com.example.demo.Users;
 
-import com.example.demo.Classes.Classes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,7 +17,7 @@ public class Users {
     private String email;
     private String password;
     private String mobile;
-    private long score;
+    private double score;
     private String role;
     private Date registeredDate;
     private Date lastLoggedInDate;
@@ -41,6 +39,7 @@ public class Users {
         this.lastLoggedInDate = lastLoggedInDate;
     }
 
+    @JsonIgnore
     public long getId() {
         return id;
     }
@@ -65,6 +64,7 @@ public class Users {
         this.lastName = lastName;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -81,11 +81,11 @@ public class Users {
         this.mobile = mobile;
     }
 
-    public long getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(long score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -97,6 +97,7 @@ public class Users {
         this.role = role;
     }
 
+    @JsonIgnore
     public Date getRegisteredDate() {
         return registeredDate;
     }

@@ -62,4 +62,11 @@ public class ProblemsController {
         return problemsServices.updateProblemByProblemId(userId, problemId, problemsDTO);
     }
 
+    @GetMapping("/user/{userId}/class/{classId}/post/{postId}/problems")
+    public ResponseEntity findAllProblemsAssignedInPost(@PathVariable long userId,
+                                                        @PathVariable long classId,
+                                                        @PathVariable long postId){
+        return problemsServices.findAllProblemsAssignedInPost(userId, classId, postId);
+    }
+
 }
