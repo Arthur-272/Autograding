@@ -47,8 +47,25 @@ public class PostsController {
         return postsServices.removeUsersFromPost(userId, classId, postId, new JSONObject(string).getJSONArray("ids"));
     }
 
-    @GetMapping("/user/{userId}/class/{classId}/posts")
+    /**
+     * Use this when you require to get posts concerning the currently logged in user
+     * */
+
+    /*@GetMapping("/user/{userId}/class/{classId}/posts")
     ResponseEntity findAllPostsByUserIdAndClassId(@PathVariable long userId, @PathVariable long classId){
         return postsServices.findAllPostsByUserIdAndClassId(userId, classId);
+    }*/
+
+    @DeleteMapping("/user/{userId}/class/{classId}/post/{postId}")
+    public ResponseEntity deletePostById(@PathVariable long userId,
+                                         @PathVariable long classId,
+                                         @PathVariable long postId){
+        return postsServices.deleteById(postId);
+    }
+
+    @GetMapping("/user/{userId}/class/{classId}/posts")
+    public ResponseEntity findAllPostsByClassId(@PathVariable long userId,
+                                                @PathVariable long classId){
+        return postsServices.findAllPostsByClassId(userId, classId);
     }
 }
