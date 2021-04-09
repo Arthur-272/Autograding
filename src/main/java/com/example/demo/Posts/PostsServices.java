@@ -41,7 +41,7 @@ public class PostsServices {
         return postsRepositories.findById(id);
     }
 
-    public void createPost(long userId, long classId, Posts newPost) throws Exception{
+    public ResponseEntity createPost(long userId, long classId, Posts newPost) throws Exception{
         if(classesServices.getAllTeachersByClassId(classId).contains(usersServices.getUserById(userId))){
             Classes classes = classesServices.findById(classId);
             List<Posts> postsInClass = classes.getPosts();
@@ -79,6 +79,7 @@ public class PostsServices {
         } else{
             throw new Exception("Invalid user accessing the class");
         }
+        return ResponseEntity.ok().body(newPost.getId());
     }
 
 

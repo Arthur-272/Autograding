@@ -18,8 +18,8 @@ public class PostsController {
     private ClassesServices classesServices;
 
     @PostMapping("/user/{userId}/class/{id}/newPost")
-    public void addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post) throws Exception{
-        postsServices.createPost(userId, id, post);
+    public ResponseEntity addNewPost(@PathVariable long userId, @PathVariable long id, @RequestBody Posts post) throws Exception{
+        return postsServices.createPost(userId, id, post);
     }
 
     @PostMapping("/user/{userId}/class/{classId}/post/{postId}/assignProblems")

@@ -1,5 +1,6 @@
 package com.example.demo.Classes;
 
+import com.example.demo.Users.Users;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,5 +58,15 @@ public class ClassesController {
     @PostMapping("/user/{userId}/classes/joinClass")
     public ResponseEntity joinClassUsingClassCode(@PathVariable long userId, @RequestParam String classCode){
         return classesServices.joinClassUsingClassCode(userId, classCode);
+    }
+
+    @GetMapping("/class/{classId}/students")
+    public List<Users> getStudentsByClassId(@PathVariable long classId){
+        return classesServices.getAllStudentsByClassId(classId);
+    }
+
+    @GetMapping("/class/{classId}/teachers")
+    public List<Users> getTeachersByClassId(@PathVariable long classId){
+        return classesServices.getAllTeachersByClassId(classId);
     }
 }

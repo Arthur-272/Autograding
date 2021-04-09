@@ -85,7 +85,7 @@ public class ClassesServices {
 
 //            Adding the class to the db
             classesRepositories.save(newClass);
-            return ResponseEntity.accepted().body(classCode);
+            return ResponseEntity.accepted().body(newClass.getId());
         } else {
             throw new Exception("Not a teacher");
         }
