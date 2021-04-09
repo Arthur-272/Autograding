@@ -38,6 +38,7 @@ public class SolutionsServices {
     public ResponseEntity addSolution(long userId, long problemId, MultipartFile file, String language) throws Exception {
 
         Optional<Users> user = usersRepositories.findById(userId);
+        boolean flag = false;
         if (user.isPresent()) {
             Optional<Problems> problem = problemsRepositories.findById(problemId);
             if (problem.isPresent()) {
@@ -52,9 +53,12 @@ public class SolutionsServices {
                     }
                 }
 
-//                if (maxTestCasesPassed == problem.get().getNumOfTestCases()) {
+
+                if (maxTestCasesPassed == problem.get().getNumOfTestCases()) {
 //                    return ResponseEntity.badRequest().build();
-//                }
+                    flag = true;
+                }
+
 
 
                 List<TestCases> testCases = problem.get().getTestCases();
@@ -93,12 +97,16 @@ public class SolutionsServices {
                 double usersPreviousScore = maxTestCasesPassed * scorePerTestCase;
                 double usersCurrentScore = testCasesPassed * scorePerTestCase;
                 double score = 0;
-                if (usersCurrentScore > usersPreviousScore)
+                if (usersCurrentScore > usersPreviousScore && !flag) {
                     score = usersCurrentScore;
-                else
+                    user.get().setScore(user.get().getScore() + (score - usersPreviousScore));
+                }
+                else if(!flag) {
                     score = usersPreviousScore;
+                    user.get().setScore(user.get().getScore() + (score - usersPreviousScore));
+                }
 
-                user.get().setScore(user.get().getScore() + (score - usersPreviousScore));
+
                 Solutions solution = new Solutions(
                         file.getBytes(),
                         testCasesPassed,

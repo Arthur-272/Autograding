@@ -117,12 +117,13 @@ public class PostsServices {
         }
     }
 
-    public void deleteById(long id) {
+    public ResponseEntity deleteById(long id) {
         List<Comments> comments = postsRepositories.findById(id).get().getComments();
         for(Comments comment : comments){
             commentsServices.deleteById(comment.getId());
         }
         postsRepositories.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity addUsersToPost(long ownerId,
@@ -201,12 +202,31 @@ public class PostsServices {
         }
     }
 
-    public ResponseEntity findAllPostsByUserIdAndClassId(long userId, long classId){
+
+    /**
+     * Use this when you want to get posts concerning the currently logged in user.
+     * */
+    /*public ResponseEntity findAllPostsByUserIdAndClassId(long userId, long classId){
         Users user = usersServices.getUserById(userId);
         if(user != null){
             Classes classes = classesServices.findById(classId);
             if(classes != null & (classes.getTeachers().contains(user) | classes.getStudents().contains(user))){
                 return ResponseEntity.ok().body(postsRepositories.findAllPostsByUserIdAndClassId(userId, classId));
+            } else{
+                return ResponseEntity.badRequest().build();
+            }
+        } else{
+            return ResponseEntity.badRequest().build();
+        }
+    }*/
+
+    public ResponseEntity findAllPostsByClassId(long userId, long classId) {
+        Users user = usersServices.getUserById(userId);
+        if(user != null) {
+            Classes classes = classesServices.findById(classId);
+            if(classes != null & (classes.getTeachers().contains(user) | classes.getStudents().contains(user))) {
+                List<Posts> posts = postsRepositories.findAllPostsByClassId(classId);
+                return ResponseEntity.ok().body(posts);
             } else{
                 return ResponseEntity.badRequest().build();
             }
