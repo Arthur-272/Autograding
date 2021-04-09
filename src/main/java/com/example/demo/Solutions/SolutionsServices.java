@@ -52,9 +52,9 @@ public class SolutionsServices {
                     }
                 }
 
-                if (maxTestCasesPassed == problem.get().getNumOfTestCases()) {
-                    return ResponseEntity.badRequest().build();
-                }
+//                if (maxTestCasesPassed == problem.get().getNumOfTestCases()) {
+//                    return ResponseEntity.badRequest().build();
+//                }
 
 
                 List<TestCases> testCases = problem.get().getTestCases();

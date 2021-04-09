@@ -21,4 +21,9 @@ public class UsersController {
     public Optional<List<Users>> getLeaderboard(){
         return usersServices.getUsersByHighestScore();
     }
+
+    @GetMapping("/user/{userId}")
+    public Users getUserDetails(@PathVariable long userId){
+        return usersServices.getUserById(userId);
+    }
 }

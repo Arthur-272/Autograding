@@ -18,7 +18,7 @@ public class LoginController {
     private LoginServices loginServices;
 
     @RequestMapping(method = RequestMethod.POST, value="/login")
-    public Long login(@RequestBody Login credentials) throws Exception{
+    public ResponseEntity login(@RequestBody Login credentials) throws Exception{
         return loginServices.login(credentials);
 
     }

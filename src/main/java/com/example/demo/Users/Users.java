@@ -39,7 +39,7 @@ public class Users {
         this.lastLoggedInDate = lastLoggedInDate;
     }
 
-    @JsonIgnore
+
     public long getId() {
         return id;
     }
@@ -64,7 +64,7 @@ public class Users {
         this.lastName = lastName;
     }
 
-    @JsonIgnore
+
     public String getPassword() {
         return password;
     }
@@ -97,7 +97,7 @@ public class Users {
         this.role = role;
     }
 
-    @JsonIgnore
+
     public Date getRegisteredDate() {
         return registeredDate;
     }
