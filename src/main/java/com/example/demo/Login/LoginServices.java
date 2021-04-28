@@ -30,7 +30,7 @@ public class LoginServices {
         if(u.isPresent()){
             id = u.get().getId();
         }
-        if(u.isPresent()){
+        if(u.isPresent() && u.get().isEnabled()){
             Users userFetchedFromDB = usersServices.getUserById(id);
             if(userFetchedFromDB.getPassword().equals(credentials.getPassword())){
                 userFetchedFromDB.setLastLoggedInDate(new Date());

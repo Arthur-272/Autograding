@@ -21,6 +21,8 @@ public class Users {
     private String role;
     private Date registeredDate;
     private Date lastLoggedInDate;
+    private boolean isEnabled;
+
 
     public Users(){
 
@@ -120,5 +122,14 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

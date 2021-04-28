@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UsersRepositories extends CrudRepository<Users, Long> {
 
     Optional<Users> findByEmail(String email);
-
+    Optional<Users> findByEmailIgnoreCase(String email);
     Optional<List<Users>> findAllByOrderByScoreDesc();
 }
