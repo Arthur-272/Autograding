@@ -107,4 +107,15 @@ public class Solutions {
         this.solutionSubmittedOn = solutionSubmittedOn;
     }
 
+    public String getLanguageUsed() {
+        return languageUsed;
+    }
+
+    public void setLanguageUsed(String languageUsed) {
+        this.languageUsed = languageUsed;
+    }
+
+    public Date getSolutionSubmittedOn() {
+        return solutionSubmittedOn;
+    }
 }
